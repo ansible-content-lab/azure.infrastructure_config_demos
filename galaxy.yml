@@ -1,0 +1,27 @@
+---
+namespace: lab
+name: azure_roles
+version: 1.1.1
+readme: README.md
+authors:
+  - Scott Harwell <sharwell@redhat.com>
+description: Azure use cases in the Ansible Cloud Content Incubation program.
+license:
+  - GPL-3.0-or-later
+license_file: "LICENSE"
+tags:
+  - "cloud"
+  - "azure"
+dependencies:
+  amazon.aws: 4.0.0
+  amazon.cloud: 0.1.0
+  community.aws: 4.0.0
+repository: https://github.com/ansible-content-lab/lab.azure_roles
+documentation: https://github.com/ansible-content-lab/lab.azure_roles
+homepage: https://github.com/ansible-content-lab/lab.azure_roles
+issues: https://github.com/ansible-content-lab/lab.azure_roles/issues
+build_ignore:
+  - ".tox"
+  - ".git"
+  - ".github"
+  - ".gitignore"
