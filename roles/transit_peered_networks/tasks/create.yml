@@ -1,0 +1,396 @@
+---
+- name: Configure Resource Group
+  block:
+    - name: Create Resource Group
+      azure.azcollection.azure_rm_resourcegroup:
+        name: "{{ resource_group_name }}"
+        location: "{{ region }}"
+        state: present
+        tags:
+          deployment: ansible
+  tags:
+    - rg
+
+- name: Configure Networking
+  block:
+    - name: Create a route table
+      azure.azcollection.azure_rm_routetable:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ route_table_name }}"
+        disable_bgp_route_propagation: true
+        tags:
+          deployment: ansible
+      register: route_table
+
+    - name: Create Hub VNET
+      azure.azcollection.azure_rm_virtualnetwork:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ hub_vnet_name }}"
+        address_prefixes_cidr:
+          - "{{ hub_vnet_cidr }}"
+        state: present
+        tags:
+          deployment: ansible
+      register: hub_vnet
+
+    - name: Sleep for 5 seconds so that Azure recognizes the VNET before subnet creation
+      ansible.builtin.wait_for:
+        timeout: 5
+      delegate_to: localhost
+
+    - name: Create Hub Subnet
+      azure.azcollection.azure_rm_subnet:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ hub_subnet_name }}"
+        virtual_network_name: "{{ hub_vnet.state.name }}"
+        address_prefix_cidr: "{{ hub_subnet_cidr }}"
+        state: present
+      register: hub_subnet
+
+    - name: Create public ip for virtual gateway for VPN connections
+      azure.azcollection.azure_rm_publicipaddress:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ virtual_gw_name }}-public-ip"
+        allocation_method: dynamic # dynamic required for vgw
+        tags:
+          deployment: ansible
+      register: hub_gw_public_ip
+
+    - name: Set Stat for Ansible Controller
+      ansible.builtin.set_stats:
+        data:
+          hub_gw_public_ip: "{{ hub_gw_public_ip.state.ip_address }}"
+        per_host: false
+
+    - name: Create Hub Subnet
+      azure.azcollection.azure_rm_subnet:
+        resource_group: "{{ resource_group_name }}"
+        name: GatewaySubnet
+        virtual_network_name: "{{ hub_vnet.state.name }}"
+        address_prefix_cidr: "{{ virtual_gw_subnet_cidr }}"
+        state: present
+      register: gw_subnet
+
+    - name: Notify wait time
+      ansible.builtin.debug:
+        msg: The next step can take 30 mins or more if the virtual network gateway does not already exist.
+
+    # This step can take a very long time...30 mins +
+    - name: Create virtual network gateway
+      azure.azcollection.azure_rm_virtualnetworkgateway:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ virtual_gw_name }}"
+        ip_configurations:
+          - name: "{{ virtual_gw_name }}-ip"
+            private_ip_allocation_method: Dynamic
+            public_ip_address_name: "{{ hub_gw_public_ip.state.name }}"
+            subnet: "{{ gw_subnet.state.name }}"
+        sku: "{{ virtual_gw_sku }}"
+        virtual_network: "{{ hub_vnet.state.name }}"
+        vpn_type: "{{ virtual_gw_vpn_type }}"
+        tags:
+          deployment: ansible
+      register: hub_gw
+
+    - name: Create Spoke1 VNET
+      azure.azcollection.azure_rm_virtualnetwork:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ spoke1_vnet_name }}"
+        address_prefixes_cidr:
+          - "{{ spoke1_vnet_cidr }}"
+        state: present
+        tags:
+          deployment: ansible
+      register: spoke1_vnet
+
+    - name: Sleep for 5 seconds so that Azure recognizes the VNET before subnet creation
+      ansible.builtin.wait_for:
+        timeout: 5
+      delegate_to: localhost
+
+    - name: Create Spoke1 Subnet
+      azure.azcollection.azure_rm_subnet:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ spoke1_subnet_name }}"
+        virtual_network_name: "{{ spoke1_vnet.state.name }}"
+        address_prefix_cidr: "{{ spoke1_subnet_cidr }}"
+        route_table: "{{ route_table_name }}"
+        state: present
+      register: spoke1_subnet
+
+    - name: Create Spoke2 VNET
+      azure.azcollection.azure_rm_virtualnetwork:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ spoke2_vnet_name }}"
+        address_prefixes_cidr:
+          - "{{ spoke2_vnet_cidr }}"
+        state: present
+        tags:
+          deployment: ansible
+      register: spoke2_vnet
+
+    - name: Sleep for 5 seconds so that Azure recognizes the VNET before subnet creation
+      ansible.builtin.wait_for:
+        timeout: 5
+      delegate_to: localhost
+
+    - name: Create Spoke2 Subnet
+      azure.azcollection.azure_rm_subnet:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ spoke2_subnet_name }}"
+        virtual_network_name: "{{ spoke2_vnet.state.name }}"
+        address_prefix_cidr: "{{ spoke2_subnet_cidr }}"
+        route_table: "{{ route_table_name }}"
+        state: present
+      register: spoke2_subnet
+
+    - name: Peer hub to spoke 1
+      azure.azcollection.azure_rm_virtualnetworkpeering:
+        resource_group: "{{ resource_group_name }}"
+        virtual_network: "{{ hub_vnet_name }}"
+        name: hub_TO_spoke1
+        remote_virtual_network:
+          resource_group: "{{ resource_group_name }}"
+          name: "{{ spoke1_vnet_name }}"
+        allow_virtual_network_access: true
+        allow_forwarded_traffic: true
+        allow_gateway_transit: true
+        use_remote_gateways: false
+
+    - name: Peer spoke 1 to hub
+      azure.azcollection.azure_rm_virtualnetworkpeering:
+        resource_group: "{{ resource_group_name }}"
+        virtual_network: "{{ spoke1_vnet_name }}"
+        name: spoke1_TO_hub
+        remote_virtual_network:
+          resource_group: "{{ resource_group_name }}"
+          name: "{{ hub_vnet_name }}"
+        allow_virtual_network_access: true
+        allow_forwarded_traffic: true
+        allow_gateway_transit: true
+        use_remote_gateways: true
+
+    - name: Peer hub to spoke 2
+      azure.azcollection.azure_rm_virtualnetworkpeering:
+        resource_group: "{{ resource_group_name }}"
+        virtual_network: "{{ hub_vnet_name }}"
+        name: hub_TO_spoke2
+        remote_virtual_network:
+          resource_group: "{{ resource_group_name }}"
+          name: "{{ spoke2_vnet_name }}"
+        allow_virtual_network_access: true
+        allow_forwarded_traffic: true
+        allow_gateway_transit: true
+        use_remote_gateways: false
+
+    - name: Peer spoke 2 to hub
+      azure.azcollection.azure_rm_virtualnetworkpeering:
+        resource_group: "{{ resource_group_name }}"
+        virtual_network: "{{ spoke2_vnet_name }}"
+        name: spoke2_TO_hub
+        remote_virtual_network:
+          resource_group: "{{ resource_group_name }}"
+          name: "{{ hub_vnet_name }}"
+        allow_virtual_network_access: true
+        allow_forwarded_traffic: true
+        allow_gateway_transit: true
+        use_remote_gateways: true
+
+    - name: Create route to spoke 1
+      azure.azcollection.azure_rm_route:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ spoke1_vnet_name }}-route"
+        address_prefix: "{{ spoke1_vnet_cidr }}"
+        next_hop_type: virtual_network_gateway
+        route_table_name: "{{ route_table_name }}"
+
+    - name: Create route to spoke 2
+      azure.azcollection.azure_rm_route:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ spoke2_vnet_name }}-route"
+        address_prefix: "{{ spoke2_vnet_cidr }}"
+        next_hop_type: virtual_network_gateway
+        route_table_name: "{{ route_table_name }}"
+
+    - name: Create route to VPN
+      azure.azcollection.azure_rm_route:
+        resource_group: "{{ resource_group_name }}"
+        name: "vpn-route"
+        address_prefix: "{{ vpn_cidr }}"
+        next_hop_type: virtual_network_gateway
+        route_table_name: "{{ route_table_name }}"
+      when: vpn_cidr is defined
+
+    - name: Create Network Security Group that allows SSH
+      azure.azcollection.azure_rm_securitygroup:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ ssh_security_group_name }}"
+        rules:
+          - name: SSH
+            protocol: Tcp
+            destination_port_range: 22
+            access: Allow
+            priority: 1001
+            direction: Inbound
+  tags:
+    - network
+    - peering
+    - routes
+
+- name: Create Hub Networks Virtual Machines
+  block:
+    - name: Create hub VM public IP address
+      azure.azcollection.azure_rm_publicipaddress:
+        resource_group: "{{ resource_group_name }}"
+        allocation_method: Static
+        name: hub-vm-public-ip
+        tags:
+          deployment: ansible
+      register: hub_vm_public_ip
+
+    - name: Dump public IP for VM which will be created
+      ansible.builtin.debug:
+        msg: "Hub VM IP address: {{ hub_vm_public_ip.state.ip_address }}"
+
+    - name: Set Stat for Ansible Controller
+      ansible.builtin.set_stats:
+        data:
+          azure_hub_vm_public_ip: "{{ hub_vm_public_ip.state.ip_address }}"
+        per_host: false
+
+    - name: Create hub VM virtual network interface card
+      azure.azcollection.azure_rm_networkinterface:
+        resource_group: "{{ resource_group_name }}"
+        name: hub-vm-pub-nic
+        virtual_network: "{{ hub_vnet_name }}"
+        subnet: "{{ hub_subnet_name }}"
+        public_ip_name: "{{ hub_vm_public_ip.state.name }}"
+        security_group: "{{ ssh_security_group_name }}"
+        tags:
+          deployment: ansible
+      register: hub_vnic
+
+    - name: Create hub VM
+      azure.azcollection.azure_rm_virtualmachine:
+        resource_group: "{{ resource_group_name }}"
+        name: hub-vm
+        vm_size: "{{ vm_size | default('Standard_DS2_v2') }}"
+        managed_disk_type: "{{ disk_type | default('Standard_LRS') }}"
+        admin_username: "{{ vm_username }}"
+        ssh_password_enabled: false
+        ssh_public_keys:
+          - path: "/home/{{ admin_user | default('azureuser') }}/.ssh/authorized_keys"
+            key_data: "{{ ansible_ssh_pub_key }}"
+        network_interfaces: "{{ hub_vnic.state.name }}"
+        image:
+          offer: RHEL
+          publisher: RedHat
+          sku: "{{ vm_sku | default('8_5') }}"
+          version: latest
+        max_price: "{{ max_price | default(-1) }}"
+        priority: "{{ priority | default('Spot') }}"
+        tags:
+          deployment: ansible
+
+    - name: Add public IP to host group
+      ansible.builtin.add_host:
+        name: "{{ hub_vm_public_ip.state.ip_address }}"
+        groups: DMZ
+        ansible_ssh_user: azureuser
+  tags:
+    - vm
+    - hub
+
+- name: Create Spoke 1 Virtual Machines
+  block:
+    - name: Create spoke 1 VM virtual network interface card
+      azure.azcollection.azure_rm_networkinterface:
+        resource_group: "{{ resource_group_name }}"
+        name: spoke-1-vm-nic
+        virtual_network: "{{ spoke1_vnet_name }}"
+        subnet: "{{ spoke1_subnet_name }}"
+        tags:
+          deployment: ansible
+      register: spoke1_vnic
+
+    - name: Dump IP for VM which will be created
+      ansible.builtin.debug:
+        msg: "Spoke 1 VM IP Address: {{ spoke1_vnic.state.ip_configuration.private_ip_address }}"
+
+    - name: Set Stat for Ansible Controller
+      ansible.builtin.set_stats:
+        data:
+          azure_spoke1_vm_ip: "{{ spoke1_vnic.state.ip_configuration.private_ip_address }}"
+        per_host: false
+
+    - name: Create spoke 1 VM
+      azure.azcollection.azure_rm_virtualmachine:
+        resource_group: "{{ resource_group_name }}"
+        name: spoke-1-vm
+        vm_size: "{{ vm_size | default('Standard_DS2_v2') }}"
+        managed_disk_type: "{{ disk_type | default('Standard_LRS') }}"
+        admin_username: "{{ admin_user | default('azureuser') }}"
+        ssh_password_enabled: false
+        ssh_public_keys:
+          - path: "/home/{{ admin_user | default('azureuser') }}/.ssh/authorized_keys"
+            key_data: "{{ ansible_ssh_pub_key }}"
+        network_interfaces: "{{ spoke1_vnic.state.name }}"
+        image:
+          offer: RHEL
+          publisher: RedHat
+          sku: "{{ vm_sku | default('8_5') }}"
+          version: latest
+        max_price: "{{ max_price | default(-1) }}"
+        priority: "{{ priority | default('Spot') }}"
+        tags:
+          deployment: ansible
+  tags:
+    - vm
+    - spoke1
+
+- name: Create Spoke 2 Virtual Machines
+  block:
+    - name: Create spoke 2 VM virtual network interface card
+      azure.azcollection.azure_rm_networkinterface:
+        resource_group: "{{ resource_group_name }}"
+        name: spoke-2-vm-nic
+        virtual_network: "{{ spoke2_vnet_name }}"
+        subnet: "{{ spoke2_subnet_name }}"
+        tags:
+          deployment: ansible
+      register: spoke2_vnic
+
+    - name: Dump IP for VM which will be created
+      ansible.builtin.debug:
+        msg: "Spoke 2 VM IP Address: {{ spoke2_vnic.state.ip_configuration.private_ip_address }}"
+
+    - name: Set Stat for Ansible Controller
+      ansible.builtin.set_stats:
+        data:
+          azure_spoke1_vm_ip: "{{ spoke2_vnic.state.ip_configuration.private_ip_address }}"
+        per_host: false
+
+    - name: Create spoke 2 VM
+      azure.azcollection.azure_rm_virtualmachine:
+        resource_group: "{{ resource_group_name }}"
+        name: spoke-2-vm
+        vm_size: "{{ vm_size | default('Standard_DS2_v2') }}"
+        managed_disk_type: "{{ disk_type | default('Standard_LRS') }}"
+        admin_username: "{{ admin_user | default('azureuser') }}"
+        ssh_password_enabled: false
+        ssh_public_keys:
+          - path: "/home/{{ admin_user | default('azureuser') }}/.ssh/authorized_keys"
+            key_data: "{{ ansible_ssh_pub_key }}"
+        network_interfaces: "{{ spoke2_vnic.state.name }}"
+        image:
+          offer: RHEL
+          publisher: RedHat
+          sku: "{{ vm_sku | default('8_5') }}"
+          version: latest
+        max_price: "{{ max_price | default(-1) }}"
+        priority: "{{ priority | default('Spot') }}"
+        tags:
+          deployment: ansible
+  tags:
+    - vm
+    - spoke2

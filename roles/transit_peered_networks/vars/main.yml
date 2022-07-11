@@ -1,0 +1,8 @@
+---
+# Optional
+# node_pool_rg: rg-aapmerzlmeth7jle-nodepools-eastus
+# managed_app_rg: mrg-rhaapomsa-hmabuaap01-20220429143116
+# managed_app_vnet_name: vnet-aapmerzlmeth7jle-eastus
+# managed_app_cidr: "192.168.0.0/26"
+# managed_app_route_table: aks-agentpool-20600955-routetable
+# vpn_cidr: 10.100.0.0/16

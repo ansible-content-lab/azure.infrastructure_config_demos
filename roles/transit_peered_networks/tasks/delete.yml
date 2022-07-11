@@ -1,0 +1,7 @@
+---
+- name: Destroy resource group
+  azure.azcollection.azure_rm_resourcegroup:
+    name: "{{ resource_group_name }}"
+    location: "{{ region }}"
+    state: absent
+    force_delete_nonempty: true
