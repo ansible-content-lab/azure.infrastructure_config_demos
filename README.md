@@ -25,6 +25,11 @@ Click on the role name to be directed to the README specifically for that role.
 |------------------------------------------|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
 | `lab.azure_roles.create_transit_network` | `roles.transit_peered_networks` | A playbook to create a multi-VPC hub-and-spoke network configuration using a transit gateway with DMZ and private networks. |
 | `lab.azure_roles.delete_transit_network` | `roles.transit_peered_networks` | Deletes AWS resources created in the `create_transit_network` playbook.                                                     |
+|`lab.azure_roles.create_resource_group.yml`|N/A|Simple playbook demonstrating how to create an Azure resource group from extra vars.|
+|`lab.azure_roles.create_rhel_vm.yml`|N/A|Creates a RHEL VM with either a public or private IP based on extra vars.|
+|`lab.azure_roles.create_windows_vm.yml`|N/A|Creates a Windows VM with either a public or private IP based on extra vars.|
+|`lab.azure_roles.delete_resource_group.yml`|N/A|Deletes a resource group and all resources within it.|
+|`lab.azure_roles.update_rhel_vms.yml`|N/A|Runs `dnf upgrade -y` on RHEL VMs.|
 
 <!--end collection content-->
 
