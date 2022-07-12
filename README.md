@@ -44,11 +44,11 @@ When the following variables are set, then the playbook will also configure the 
 | `priv_network_ssh_user`                   | The SSH user that will be configured in the bastion host SSH config.                                               |
 
 ```yaml
-# These variables determine if there is an attempt to configure the DMZ VM to connect to other VMs.
-ansible_ssh_private_key_file_local_path: ~/.ssh/azure-ssh-key # Must exist locally or be mapped in an EE
-ansible_ssh_private_key_file_dest_path: ~/.ssh/azure-ssh-key # This will be the destination for the private key
-priv_network_hosts_pattern: 172.* # Will use the same username and ssh key for any host on the 10.* network
-priv_network_ssh_user: azureuser # Will likely always be `ec2-user`, but set here as an option
+---
+ansible_ssh_private_key_file_local_path: ~/.ssh/azure-ssh-key
+ansible_ssh_private_key_file_dest_path: ~/.ssh/azure-ssh-key
+priv_network_hosts_pattern: 172.*
+priv_network_ssh_user: azureuser
 ```
 
 ## Installation and Usage
