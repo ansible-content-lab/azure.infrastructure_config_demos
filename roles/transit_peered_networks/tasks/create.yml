@@ -279,7 +279,7 @@
         admin_username: "{{ vm_username }}"
         ssh_password_enabled: false
         ssh_public_keys:
-          - path: "/home/{{ admin_user | default('azureuser') }}/.ssh/authorized_keys"
+          - path: "/home/{{ vm_username | default('azureuser') }}/.ssh/authorized_keys"
             key_data: "{{ ansible_ssh_pub_key }}"
         network_interfaces: "{{ hub_vnic.state.name }}"
         image:
@@ -296,7 +296,7 @@
       ansible.builtin.add_host:
         name: "{{ hub_vm_public_ip.state.ip_address }}"
         groups: DMZ
-        ansible_ssh_user: azureuser
+        ansible_ssh_user: "{{ vm_username | default('azureuser') }}"
   tags:
     - vm
     - hub
@@ -329,10 +329,10 @@
         name: spoke-1-vm
         vm_size: "{{ vm_size | default('Standard_DS2_v2') }}"
         managed_disk_type: "{{ disk_type | default('Standard_LRS') }}"
-        admin_username: "{{ admin_user | default('azureuser') }}"
+        admin_username: "{{ vm_username | default('azureuser') }}"
         ssh_password_enabled: false
         ssh_public_keys:
-          - path: "/home/{{ admin_user | default('azureuser') }}/.ssh/authorized_keys"
+          - path: "/home/{{ vm_username | default('azureuser') }}/.ssh/authorized_keys"
             key_data: "{{ ansible_ssh_pub_key }}"
         network_interfaces: "{{ spoke1_vnic.state.name }}"
         image:
@@ -376,10 +376,10 @@
         name: spoke-2-vm
         vm_size: "{{ vm_size | default('Standard_DS2_v2') }}"
         managed_disk_type: "{{ disk_type | default('Standard_LRS') }}"
-        admin_username: "{{ admin_user | default('azureuser') }}"
+        admin_username: "{{ vm_username | default('azureuser') }}"
         ssh_password_enabled: false
         ssh_public_keys:
-          - path: "/home/{{ admin_user | default('azureuser') }}/.ssh/authorized_keys"
+          - path: "/home/{{ vm_username | default('azureuser') }}/.ssh/authorized_keys"
             key_data: "{{ ansible_ssh_pub_key }}"
         network_interfaces: "{{ spoke2_vnic.state.name }}"
         image:

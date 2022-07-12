@@ -1,38 +1,63 @@
-Role Name
-=========
+# Transit Network Deployment Role
 
-A brief description of the role goes here.
+This Ansible role contains repeatable automation for a hub-and-spoke VNET peering model that can help establish template infrastructure configurations that may be used for starting an Azure networking infrastructure strategy or to create demonstrations for network peering scenarios.
 
-Requirements
-------------
+## Create Transit Network
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+This operation will create the resources necessary for a transit network model with three VNETs; one acting as a public internet-facing DMZ where bastion servers and other internet resources could exist, and another that acts as an entirely private network with no internet access, and a third hub where a Virtual Network Gateway resides that can route traffic between the networks.  These networks are configured with routing rules that allow traffic between the VNETs and their subnets through the Virtual Network Gateway.  Once deployed, you can SSH in to the bastion host in order to can access to the host on the private network.
 
-Role Variables
---------------
+### Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+The following variables are used during deployment and can be configured as extra vars at deploy time if you require something other than the defaults.
 
-Dependencies
-------------
+#### Required
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+```yaml
+---
+region: eastus
+resource_group_name: rg-transit-routing-demo
+```
 
-Example Playbook
-----------------
+#### Optional (Networking Configuration)
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```yaml
+---
+hub_vnet_name: hub-vnet
+hub_vnet_cidr: "172.16.0.0/23"
+hub_subnet_name: hub-subnet
+hub_subnet_cidr: "172.16.0.0/24"
+spoke1_vnet_name: spoke-1-vnet
+spoke1_vnet_cidr: "172.16.2.0/24"
+spoke1_subnet_name: spoke-1-subnet
+spoke1_subnet_cidr: "172.16.2.0/24"
+spoke2_vnet_name: spoke-2-vnet
+spoke2_vnet_cidr: "172.16.3.0/24"
+spoke2_subnet_name: spoke-2-subnet
+spoke2_subnet_cidr: "172.16.3.0/24"
+virtual_gw_name: hub-gateway
+virtual_gw_sku: Basic
+virtual_gw_subnet_cidr: "172.16.1.0/26"
+virtual_gw_vpn_type: route_based
+route_table_name: "hub-and-spoke-route-table"
+ssh_security_group_name: ssh-security-group
+rhel_vm_sku: "8_5"
+vm_size: Standard_A1_v2
+vm_username: azureuser
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+#### Optional (VM Configuration)
 
-License
--------
+```yaml
+ansible_ssh_pub_key: "{{ lookup('ansible.builtin.file', '~/.ssh/id_rsa_azure_demo.pub') }}"
+ansible_ssh_private_key_file: ~/.ssh/id_rsa_azure_demo
+```
 
-BSD
+### Infrastructure
 
-Author Information
-------------------
+The following Azure infrastructure resources are created during this deployment.  The delete operation attempts to remove the entire resource group, therefor removing all of the resources created.
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+### Architecture Diagram
+
+![Deployment Architecture Diagram](./files/transit_network_arch_diagram.png)
+
+Resources below the dotted line demonstrate how you may connect other resources to the architecture through Virtual Network Gateway connectivity.
