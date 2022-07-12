@@ -1,0 +1,48 @@
+---
+- name: Set required facts
+  ansible.builtin.set_fact:
+    region: eastus
+    resource_group_name: rg-transit-molecule-test
+    ansible_ssh_pub_key: "{{ lookup('ansible.builtin.file', '~/.ssh/id_rsa_azure_demo.pub') }}"
+    ansible_ssh_private_key_file: ~/.ssh/id_rsa_azure_demo
+    priv_network_hosts_pattern: 172.16.*
+    priv_network_ssh_user: azureuser
+    ansible_ssh_private_key_file_local_path: ~/.ssh/id_rsa_azure_demo
+    ansible_ssh_private_key_file_dest_path: ~/.ssh/id_rsa_azure_demo
+
+- name: Test Transit Network Deployment
+  block:
+    - name: Notify tester that this can take a long time
+      ansible.builtin.debug:
+        msg: Creating a Virtual Network Gateway can take over 30 mins, meaning that this test will take a long time to run.
+
+    - name: Fail if variables not defined
+      ansible.builtin.assert:
+        that:
+          - region is defined
+          - resource_group_name is defined
+          - ansible_ssh_pub_key is defined
+        fail_msg: "Required variables not set"
+
+    - name: Create Peer Networking Model
+      ansible.builtin.import_role:
+        name: lab.azure_roles.transit_peered_networks
+      vars:
+        operation: create
+
+    - name: Check VNETs
+      azure.azcollection.azure_rm_virtualnetwork_info:
+        resource_group: "{{ resource_group_name }}"
+      register: vnet_results
+
+    - name: Assert that there are at least three VNETs that exist
+      ansible.builtin.assert:
+        that:
+          - vnet_results.virtualnetworks | length >= 3
+
+  always:
+    - name: Delete Transit Network
+      ansible.builtin.import_role:
+        name: lab.azure_roles.transit_peered_networks
+      vars:
+        operation: delete

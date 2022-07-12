@@ -1,4 +1,5 @@
 .DS_Store
 inventory
 env
+.env.yml
 *.log
