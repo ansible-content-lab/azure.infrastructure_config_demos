@@ -31,6 +31,7 @@
         state: present
         tags:
           deployment: ansible
+          network-role: hub
       register: hub_vnet
 
     - name: Sleep for 5 seconds so that Azure recognizes the VNET before subnet creation
@@ -101,6 +102,7 @@
         state: present
         tags:
           deployment: ansible
+          network-role: spoke
       register: spoke1_vnet
 
     - name: Sleep for 5 seconds so that Azure recognizes the VNET before subnet creation
@@ -127,6 +129,7 @@
         state: present
         tags:
           deployment: ansible
+          network-role: spoke
       register: spoke2_vnet
 
     - name: Sleep for 5 seconds so that Azure recognizes the VNET before subnet creation
@@ -239,24 +242,6 @@
 
 - name: Create Hub Networks Virtual Machines
   block:
-    - name: Create hub VM public IP address
-      azure.azcollection.azure_rm_publicipaddress:
-        resource_group: "{{ resource_group_name }}"
-        allocation_method: Static
-        name: hub-vm-public-ip
-        tags:
-          deployment: ansible
-      register: hub_vm_public_ip
-
-    - name: Dump public IP for VM which will be created
-      ansible.builtin.debug:
-        msg: "Hub VM IP address: {{ hub_vm_public_ip.state.ip_address }}"
-
-    - name: Set Stat for Ansible Controller
-      ansible.builtin.set_stats:
-        data:
-          azure_hub_vm_public_ip: "{{ hub_vm_public_ip.state.ip_address }}"
-        per_host: false
 
     - name: Create hub VM virtual network interface card
       azure.azcollection.azure_rm_networkinterface:
@@ -264,11 +249,20 @@
         name: hub-vm-pub-nic
         virtual_network: "{{ hub_vnet_name }}"
         subnet: "{{ hub_subnet_name }}"
-        public_ip_name: "{{ hub_vm_public_ip.state.name }}"
         security_group: "{{ ssh_security_group_name }}"
         tags:
           deployment: ansible
       register: hub_vnic
+
+    - name: Dump IP for VM which will be created
+      ansible.builtin.debug:
+        msg: "Spoke 1 VM IP Address: {{ hub_vnic.state.ip_configuration.private_ip_address }}"
+
+    - name: Set Stat for Ansible Controller
+      ansible.builtin.set_stats:
+        data:
+          azure_hub_vm_private_ip: "{{ hub_vnic.state.ip_configuration.private_ip_address }}"
+        per_host: false
 
     - name: Create hub VM
       azure.azcollection.azure_rm_virtualmachine:
@@ -291,12 +285,6 @@
         priority: "{{ priority | default('Spot') }}"
         tags:
           deployment: ansible
-
-    - name: Add public IP to host group
-      ansible.builtin.add_host:
-        name: "{{ hub_vm_public_ip.state.ip_address }}"
-        groups: DMZ
-        ansible_ssh_user: "{{ vm_username | default('azureuser') }}"
   tags:
     - vm
     - hub
@@ -320,7 +308,7 @@
     - name: Set Stat for Ansible Controller
       ansible.builtin.set_stats:
         data:
-          azure_spoke1_vm_ip: "{{ spoke1_vnic.state.ip_configuration.private_ip_address }}"
+          azure_spoke1_vm_private_ip: "{{ spoke1_vnic.state.ip_configuration.private_ip_address }}"
         per_host: false
 
     - name: Create spoke 1 VM
@@ -350,24 +338,39 @@
 
 - name: Create Spoke 2 Virtual Machines
   block:
+    - name: Create DMZ VM public IP address
+      azure.azcollection.azure_rm_publicipaddress:
+        resource_group: "{{ resource_group_name }}"
+        allocation_method: Static
+        name: dmz-vm-public-ip
+        tags:
+          deployment: ansible
+      register: dmz_vm_public_ip
+
+    - name: Dump public IP for VM which will be created
+      ansible.builtin.debug:
+        msg: "DMZ VM IP address: {{ dmz_vm_public_ip.state.ip_address }}"
+
     - name: Create spoke 2 VM virtual network interface card
       azure.azcollection.azure_rm_networkinterface:
         resource_group: "{{ resource_group_name }}"
         name: spoke-2-vm-nic
+        public_ip_name: "{{ dmz_vm_public_ip.state.name }}"
         virtual_network: "{{ spoke2_vnet_name }}"
         subnet: "{{ spoke2_subnet_name }}"
         tags:
           deployment: ansible
       register: spoke2_vnic
 
-    - name: Dump IP for VM which will be created
+    - name: Dump Private IP for VM which will be created
       ansible.builtin.debug:
         msg: "Spoke 2 VM IP Address: {{ spoke2_vnic.state.ip_configuration.private_ip_address }}"
 
     - name: Set Stat for Ansible Controller
       ansible.builtin.set_stats:
         data:
-          azure_spoke1_vm_ip: "{{ spoke2_vnic.state.ip_configuration.private_ip_address }}"
+          azure_dmz_vm_public_ip: "{{ dmz_vm_public_ip.state.ip_address }}"
+          azure_dmz_vm_private_ip: "{{ spoke2_vnic.state.ip_configuration.private_ip_address }}"
         per_host: false
 
     - name: Create spoke 2 VM
@@ -391,6 +394,12 @@
         priority: "{{ priority | default('Spot') }}"
         tags:
           deployment: ansible
+
+    - name: Add public IP to host group
+      ansible.builtin.add_host:
+        name: "{{ dmz_vm_public_ip.state.ip_address }}"
+        groups: DMZ
+        ansible_ssh_user: "{{ vm_username | default('azureuser') }}"
   tags:
     - vm
     - spoke2

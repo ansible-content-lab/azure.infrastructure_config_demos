@@ -25,6 +25,11 @@
   vars_files:
     - vars/create_transit_network.yml
   tasks:
+    - name: Sleep for 5 seconds so that Azure IPs have time to become available.
+      ansible.builtin.wait_for:
+        timeout: 5
+      delegate_to: localhost
+
     - name: Configure SSH when the playbook has the proper variables
       block:
         - name: Create SSH config file
