@@ -1,0 +1,24 @@
+---
+# Dynamic inventory to fetch running RHEL instances
+plugin: azure.azcollection.azure_rm
+
+include_vm_resource_groups:
+  - "*"
+
+conditional_groups:
+  all_the_hosts: true
+  rhel: "'RHEL' in image.offer"
+  windows: "'WindowsServer' in image.offer"
+
+# hostnames:
+#   - tags.vm_name
+
+keyed_groups:
+  - prefix: tag
+    key: tags
+  - prefix: azure_loc
+    key: location
+
+exclude_host_filters:
+  # excludes hosts that are powered off
+  - powerstate != 'running'
