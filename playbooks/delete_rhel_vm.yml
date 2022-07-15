@@ -33,3 +33,25 @@
         resource_group: "{{ resource_group_name }}"
         name: "{{ vm_results.vms[0].name }}"
         state: absent
+
+    - name: Get Security Group by tags
+      azure.azcollection.azure_rm_securitygroup_info:
+        resource_group: "{{ resource_group_name }}"
+        tags:
+          - ansible-collection:lab.azure_roles
+          - ansible-playbook:create_rhel_vm
+      register: sg_results
+
+    - name: Verify that SG was found
+      ansible.builtin.assert:
+        that:
+          - sg_results.securitygroups is defined
+          - sg_results.securitygroups | length == 1
+        fail_msg: "Security Group count returned not equal to 1"
+        success_msg: "Found 1 Security Group to delete"
+
+    - name: Delete Security Group
+      azure.azcollection.azure_rm_securitygroup:
+        resource_group: "{{ resource_group_name }}"
+        name: "{{ sg_results.securitygroups[0].name }}"
+        state: absent
