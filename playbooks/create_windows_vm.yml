@@ -1,5 +1,5 @@
 ---
-- name: Create Azure VM
+- name: Create Windows Demo VM
   hosts: localhost
   connection: local
   gather_facts: false
@@ -35,7 +35,7 @@
             direction: Inbound
         tags:
           ansible-collection: lab.azure_roles
-          ansible-playbook: create_rhel_vm
+          ansible-playbook: create_windows_vm
 
     - name: Create public IP address
       azure.azcollection.azure_rm_publicipaddress:
@@ -44,7 +44,7 @@
         name: "{{ public_ip_name }}"
         tags:
           ansible-collection: lab.azure_roles
-          ansible-playbook: create_rhel_vm
+          ansible-playbook: create_windows_vm
       register: ip_addr_results
 
     - name: Create virtual network interface card
@@ -73,7 +73,7 @@
           version: latest
         tags:
           ansible-collection: lab.azure_roles
-          ansible-playbook: create_rhel_vm
+          ansible-playbook: create_windows_vm
 
     - name: Dump Private IP for VM which will be created
       ansible.builtin.debug:
