@@ -34,8 +34,8 @@
             priority: 1002
             direction: Inbound
         tags:
-          deployment: ansible
-          purpose: demo
+          ansible-collection: lab.azure_roles
+          ansible-playbook: create_rhel_vm
 
     - name: Create public IP address
       azure.azcollection.azure_rm_publicipaddress:
@@ -43,8 +43,8 @@
         allocation_method: Static
         name: "{{ public_ip_name }}"
         tags:
-          deployment: ansible
-          purpose: demo
+          ansible-collection: lab.azure_roles
+          ansible-playbook: create_rhel_vm
       register: ip_addr_results
 
     - name: Create virtual network interface card
@@ -72,8 +72,8 @@
           sku: "{{ vm_sku | default('2022-Datacenter') }}"
           version: latest
         tags:
-          deployment: ansible
-          purpose: demo
+          ansible-collection: lab.azure_roles
+          ansible-playbook: create_rhel_vm
 
     - name: Dump Private IP for VM which will be created
       ansible.builtin.debug:
