@@ -89,7 +89,7 @@
         image:
           offer: RHEL
           publisher: RedHat
-          sku: "{{ vm_sku | default('8_5') }}"
+          sku: "{{ vm_sku | default('8_6') }}"
           version: latest
         max_price: "{{ max_price | default(-1) }}"
         priority: "{{ priority | default('None') }}"
