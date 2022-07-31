@@ -34,7 +34,7 @@
             priority: 1002
             direction: Inbound
         tags:
-          ansible-collection: lab.azure_roles
+          ansible-collection: azure.infrastructure_config_demos
           ansible-playbook: create_windows_vm
 
     - name: Create public IP address
@@ -43,7 +43,7 @@
         allocation_method: Static
         name: "{{ public_ip_name }}"
         tags:
-          ansible-collection: lab.azure_roles
+          ansible-collection: azure.infrastructure_config_demos
           ansible-playbook: create_windows_vm
       register: ip_addr_results
 
@@ -72,7 +72,7 @@
           sku: "{{ vm_sku | default('2022-Datacenter') }}"
           version: latest
         tags:
-          ansible-collection: lab.azure_roles
+          ansible-collection: azure.infrastructure_config_demos
           ansible-playbook: create_windows_vm
 
     - name: Dump Private IP for VM which will be created

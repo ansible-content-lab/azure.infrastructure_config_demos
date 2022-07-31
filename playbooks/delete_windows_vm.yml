@@ -16,7 +16,7 @@
       azure.azcollection.azure_rm_virtualmachine_info:
         resource_group: "{{ resource_group_name }}"
         tags:
-          - ansible-collection:lab.azure_roles
+          - ansible-collection:azure.infrastructure_config_demos
           - ansible-playbook:create_windows_vm
       register: vm_results
 
@@ -38,7 +38,7 @@
       azure.azcollection.azure_rm_securitygroup_info:
         resource_group: "{{ resource_group_name }}"
         tags:
-          - ansible-collection:lab.azure_roles
+          - ansible-collection:azure.infrastructure_config_demos
           - ansible-playbook:create_windows_vm
       register: sg_results
 

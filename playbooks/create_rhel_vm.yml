@@ -33,7 +33,7 @@
             priority: 1001
             direction: Inbound
         tags:
-          ansible-collection: lab.azure_roles
+          ansible-collection: azure.infrastructure_config_demos
           ansible-playbook: create_rhel_vm
 
     - name: Create virtual network interface card with internal ip
@@ -44,7 +44,7 @@
         subnet: "{{ subnet_name }}"
         security_group: "{{ network_sec_group_name }}"
         tags:
-          ansible-collection: lab.azure_roles
+          ansible-collection: azure.infrastructure_config_demos
           ansible-playbook: create_rhel_vm
       register: vnic_results
       when: not create_public_ip
@@ -55,7 +55,7 @@
         allocation_method: Static
         name: "{{ public_ip_name }}"
         tags:
-          ansible-collection: lab.azure_roles
+          ansible-collection: azure.infrastructure_config_demos
           ansible-playbook: create_rhel_vm
       register: ip_addr_results
       when: create_public_ip
@@ -69,7 +69,7 @@
         public_ip_name: "{{ public_ip_name }}"
         security_group: "{{ network_sec_group_name }}"
         tags:
-          ansible-collection: lab.azure_roles
+          ansible-collection: azure.infrastructure_config_demos
           ansible-playbook: create_rhel_vm
       register: vnic_results
       when: create_public_ip
@@ -94,7 +94,7 @@
         max_price: "{{ max_price | default(-1) }}"
         priority: "{{ priority | default('None') }}"
         tags:
-          ansible-collection: lab.azure_roles
+          ansible-collection: azure.infrastructure_config_demos
           ansible-playbook: create_rhel_vm
 
     - name: Dump Private IP for VM which will be created
