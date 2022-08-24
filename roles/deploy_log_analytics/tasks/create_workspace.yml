@@ -1,0 +1,8 @@
+---
+- name: Create a log analytics workspace
+  azure.azcollection.azure_rm_loganalyticsworkspace:
+    resource_group: "{{ resource_group_name }}"
+    name: "{{ workspace_name }}"
+    intelligence_packs:
+      Backup: "{{ backup | bool }}"
+  register: analytics_workspace

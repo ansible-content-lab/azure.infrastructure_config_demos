@@ -1,0 +1,31 @@
+---
+- name: Deploy Azure Log Analytics
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  collections:
+    - azure.azcollection
+  tasks:
+    - name: Fail if variables not defined
+      ansible.builtin.assert:
+        that:
+          - resource_group_name is defined
+          - workspace_name is defined
+        fail_msg: "Required variables not set"
+
+    - name: Deploy log analytics
+      ansible.builtin.import_role:
+        name: roles/deploy_log_analytics
+        tasks_from: create_workspace
+
+- name: Install Log Analytics Agent on Linux
+  hosts: linux
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Deploy log analytics
+      ansible.builtin.import_role:
+        name: roles/deploy_log_analytics
+        tasks_from: install_agent_linux
+      vars:
+        analytics_workspace: "{{ hostvars['localhost']['analytics_workspace'] }}"
