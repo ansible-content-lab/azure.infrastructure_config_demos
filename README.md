@@ -84,4 +84,4 @@ This repo includes a configuration file for `ansible-lint` to be run as a git [p
 # License
 GNU General Public License v3.0 or later
 
-See [LICENCE](https://github.com/ansible-content-lab/lab.aws_roles/blob/main/LICENSE) to see the full text.
+See [LICENSE](https://github.com/ansible-content-lab/lab.aws_roles/blob/main/LICENSE) to see the full text.
