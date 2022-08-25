@@ -13,9 +13,9 @@
           - workspace_name is defined
         fail_msg: "Required variables not set"
 
-    - name: Deploy log analytics
+    - name: Deploy log analytics workspace
       ansible.builtin.import_role:
-        name: roles/deploy_log_analytics
+        name: roles/log_analytics
         tasks_from: create_workspace
 
 - name: Install Log Analytics Agent on Linux
@@ -25,7 +25,7 @@
   tasks:
     - name: Deploy log analytics
       ansible.builtin.import_role:
-        name: roles/deploy_log_analytics
+        name: roles/log_analytics
         tasks_from: install_agent_linux
       vars:
         analytics_workspace: "{{ hostvars['localhost']['analytics_workspace'] }}"

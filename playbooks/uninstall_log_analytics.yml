@@ -4,9 +4,9 @@
   gather_facts: true
   become: true
   tasks:
-    - name: Deploy log analytics
+    - name: Remove Log Analytics Agent from Linux Machines
       ansible.builtin.import_role:
-        name: roles/deploy_log_analytics
+        name: roles/log_analytics
         tasks_from: uninstall_agent_linux
 
 - name: Destroy Azure Log Analytics Workspace
@@ -23,7 +23,7 @@
           - workspace_name is defined
         fail_msg: "Required variables not set"
 
-    - name: Deploy log analytics
+    - name: Destroy log analytics workspace
       ansible.builtin.import_role:
-        name: roles/deploy_log_analytics
+        name: roles/log_analytics
         tasks_from: delete_workspace

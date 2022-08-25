@@ -15,21 +15,24 @@ This content was developed as part of the [Ansible Content Lab for Cloud Content
 
 Click on the role name to be directed to the README specifically for that role.
 
-| Name                                                                                                                                                | Description                                                                                          |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
-| [azure.infrastructure_config_demos.transit_peered_networks](https://github.com/ansible-content-lab/azure.infrastructure_config_demos/blob/main/roles/transit_peered_networks/README.md) | A role to create a hub-and-spoke VPC networking architecture that includes DMZ and private networks. |
+| Name                                                                                                                                                                                    | Description                                                                                                                                                                               |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [azure.infrastructure_config_demos.transit_peered_networks](https://github.com/ansible-content-lab/azure.infrastructure_config_demos/blob/main/roles/transit_peered_networks/README.md) | A role to create a hub-and-spoke VPC networking architecture that includes DMZ and private networks.                                                                                      |
+| [azure.infrastructure_config_demos.log_analytics](https://github.com/ansible-content-lab/azure.infrastructure_config_demos/blob/main/roles/log_analytics/README.md)                     | A role that contains tasks to create and destroy an Azure Log Analytics workspace and then attach Linux-based VMs to the workspace by installing and configuring the Log Analytics agent. |
 
 ### Playbooks
 
-| Name                                     | Role(s) Used                    | Description                                                                                                                 |
-|------------------------------------------|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| `azure.infrastructure_config_demos.create_transit_network` | `roles.transit_peered_networks` | A playbook to create a multi-VPC hub-and-spoke network configuration using a transit gateway with DMZ and private networks. |
-| `azure.infrastructure_config_demos.delete_transit_network` | `roles.transit_peered_networks` | Deletes AWS resources created in the `create_transit_network` playbook.                                                     |
-|`azure.infrastructure_config_demos.create_resource_group.yml`|N/A|Simple playbook demonstrating how to create an Azure resource group from extra vars.|
-|`azure.infrastructure_config_demos.create_rhel_vm.yml`|N/A|Creates a RHEL VM with either a public or private IP based on extra vars.|
-|`azure.infrastructure_config_demos.create_windows_vm.yml`|N/A|Creates a Windows VM with either a public or private IP based on extra vars.|
-|`azure.infrastructure_config_demos.delete_resource_group.yml`|N/A|Deletes a resource group and all resources within it.|
-|`azure.infrastructure_config_demos.update_rhel_vms.yml`|N/A|Runs `dnf upgrade -y` on RHEL VMs.|
+| Name                                                            | Role(s) Used                    | Description                                                                                                                                    |
+|-----------------------------------------------------------------|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| `azure.infrastructure_config_demos.create_transit_network`      | `roles.transit_peered_networks` | A playbook to create a multi-VPC hub-and-spoke network configuration using a transit gateway with DMZ and private networks.                    |
+| `azure.infrastructure_config_demos.delete_transit_network`      | `roles.transit_peered_networks` | Deletes AWS resources created in the `create_transit_network` playbook.                                                                        |
+| `azure.infrastructure_config_demos.create_resource_group.yml`   | N/A                             | Simple playbook demonstrating how to create an Azure resource group from extra vars.                                                           |
+| `azure.infrastructure_config_demos.create_rhel_vm.yml`          | N/A                             | Creates a RHEL VM with either a public or private IP based on extra vars.                                                                      |
+| `azure.infrastructure_config_demos.create_windows_vm.yml`       | N/A                             | Creates a Windows VM with either a public or private IP based on extra vars.                                                                   |
+| `azure.infrastructure_config_demos.delete_resource_group.yml`   | N/A                             | Deletes a resource group and all resources within it.                                                                                          |
+| `azure.infrastructure_config_demos.update_rhel_vms.yml`         | N/A                             | Runs `dnf upgrade -y` on RHEL VMs.                                                                                                             |
+| `azure.infrastructure_config_demos.install_log_analytics.yml`   | `roles.log_analytics`           | Deploys a Log Analytics workspace into your Azure subscription and then installs and configures Linux hosts to communicate with the workspace. |
+| `azure.infrastructure_config_demos.uninstall_log_analytics.yml` | `roles.log_analytics`           | Uninstalls the Log Analytics agent on Linux hosts and then deletes the Log Analytics workspace from your Azure subscription.                   |
 
 <!--end collection content-->
 
