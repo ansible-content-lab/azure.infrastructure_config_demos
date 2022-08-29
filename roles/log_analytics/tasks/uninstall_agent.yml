@@ -1,0 +1,14 @@
+---
+- name: Check if the Log Analytics Agent is installed on Linux servers
+  ansible.builtin.stat:
+    path: /opt/microsoft/omsagent/bin/uninstall
+    get_attributes: false
+    get_checksum: false
+  register: log_agent_exists
+  when: ansible_system == 'Linux'
+
+- name: Uninstall Agent on Linux servers
+  ansible.builtin.command: "sh /opt/microsoft/omsagent/bin/uninstall"
+  when: ansible_system == 'Linux' and log_agent_exists.stat.exists
+
+  # Add for Windows servers

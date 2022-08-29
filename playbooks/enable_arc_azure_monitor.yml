@@ -1,0 +1,36 @@
+---
+- name: Ensure Arc Agent Installed on Hosts
+  hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Fail if variables not defined
+      ansible.builtin.assert:
+        that:
+          - resource_group_name is defined
+          - service_principal_id is defined
+          - service_principal_secret is defined
+          - tenant_id is defined
+          - region is defined
+          - subscription_id is defined
+        fail_msg: "Required variables not set"
+
+    - name: Install Arc Agent
+      ansible.builtin.import_role:
+        name: roles/arc
+        tasks_from: install_agent
+
+- name: Enable Azure Monitor Arc Extension
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Set linux hosts from inventory group
+      ansible.builtin.set_fact:
+        hosts: "{{ hostvars.values() | selectattr('group_names','contains', 'linux') | map(attribute='inventory_hostname') | list }}"
+
+    - name: Enable Azure Monitor on Linux
+      ansible.builtin.import_role:
+        name: roles/arc
+        tasks_from: enable_azure_monitor_agent_extension

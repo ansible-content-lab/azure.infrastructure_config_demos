@@ -1,13 +1,13 @@
 ---
 - name: Uninstall Log Analytics Agent on Linux
-  hosts: linux
+  hosts: all
   gather_facts: true
   become: true
   tasks:
-    - name: Remove Log Analytics Agent from Linux Machines
+    - name: Remove Log Analytics Agent
       ansible.builtin.import_role:
         name: roles/log_analytics
-        tasks_from: uninstall_agent_linux
+        tasks_from: uninstall_agent
 
 - name: Destroy Azure Log Analytics Workspace
   hosts: localhost

@@ -18,14 +18,14 @@
         name: roles/log_analytics
         tasks_from: create_workspace
 
-- name: Install Log Analytics Agent on Linux
-  hosts: linux
+- name: Install Log Analytics Agent
+  hosts: all
   gather_facts: true
   become: true
   tasks:
     - name: Deploy log analytics
       ansible.builtin.import_role:
         name: roles/log_analytics
-        tasks_from: install_agent_linux
+        tasks_from: install_agent
       vars:
         analytics_workspace: "{{ hostvars['localhost']['analytics_workspace'] }}"

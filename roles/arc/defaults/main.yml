@@ -1,0 +1,11 @@
+---
+extensions:
+  azure_monitor_agent:
+    name: AzureMonitorLinuxAgent # AzureMonitorWindowsAgent
+    type: AzureMonitorLinuxAgent # AzureMonitorWindowsAgent
+    publisher: Microsoft.Azure.Monitor
+  log_analytics_agent:
+    name: OmsAgentForLinux # MicrosoftMonitoringAgent
+    type_handler_version: 1.13
+    type: OmsAgentForLinux # MicrosoftMonitoringAgent
+    publisher: Microsoft.EnterpriseCloud.Monitoring

@@ -1,3 +1,0 @@
----
-- name: Uninstall Agent on Linux Machines
-  ansible.builtin.command: "sh /opt/microsoft/omsagent/bin/uninstall"

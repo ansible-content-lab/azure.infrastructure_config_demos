@@ -1,0 +1,21 @@
+---
+- name: Install Arc Agent
+  hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Fail if variables not defined
+      ansible.builtin.assert:
+        that:
+          - resource_group_name is defined
+          - service_principal_id is defined
+          - service_principal_secret is defined
+          - tenant_id is defined
+          - region is defined
+          - subscription_id is defined
+        fail_msg: "Required variables not set"
+
+    - name: Install Arc Agent
+      ansible.builtin.import_role:
+        name: roles/arc
+        tasks_from: install_agent

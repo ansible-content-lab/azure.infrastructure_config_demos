@@ -14,18 +14,20 @@ workspace_name: log-ws
 resource_group_name: rg-logs
 ```
 
-## Create Workspace Tasks
+## Tasks
+
+### Create Workspace
 
 This set of tasks creates the Log Analytics workspace within your Azure subscription.
 
-## Delete Workspace Tasks
+## Delete Workspace
 
 This set of tasks destroys the Log Analytics workspace within your Azure subscription.
 
-## Install Agent Linux Tasks
+### Install Agent
 
-This set of tasks installs the Log Analytics agent on RHEL-derivative Linux distros and connects those clients to a Log Analytics workspace.  It assumes a host inventory group called `linux` to contain the hosts that will be automated against.
+This set of tasks installs the Log Analytics agent and connects those clients to a Log Analytics workspace.
 
-## Uninstall Agent Linux Tasks
+### Uninstall Agent
 
-This set of tasks uninstalls the Log Analytics agent from Linux-based hosts.  It assumes a host inventory group called `linux` to contain the hosts that will be automated against.
+This set of tasks uninstalls the Log Analytics agent from hosts.
