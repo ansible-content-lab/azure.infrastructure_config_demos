@@ -9,13 +9,10 @@
     - name: Fail if variables not defined
       ansible.builtin.assert:
         that:
+          - linux_hosts is defined
           - resource_group_name is defined
           - analytics_workspace_name is defined
         fail_msg: "Required variables not set"
-
-    - name: Set linux hosts from inventory group
-      ansible.builtin.set_fact:
-        linux_hosts: "{{ hostvars.values() | selectattr('group_names','contains', 'linux') | map(attribute='inventory_hostname') | list }}"
 
     - name: Get Log Analytics Workspace
       azure.azcollection.azure_rm_loganalyticsworkspace_info:
