@@ -8,22 +8,3 @@
       ansible.builtin.import_role:
         name: roles/log_analytics
         tasks_from: uninstall_agent
-
-- name: Destroy Azure Log Analytics Workspace
-  hosts: localhost
-  connection: local
-  gather_facts: false
-  collections:
-    - azure.azcollection
-  tasks:
-    - name: Fail if variables not defined
-      ansible.builtin.assert:
-        that:
-          - resource_group_name is defined
-          - workspace_name is defined
-        fail_msg: "Required variables not set"
-
-    - name: Destroy log analytics workspace
-      ansible.builtin.import_role:
-        name: roles/log_analytics
-        tasks_from: delete_workspace

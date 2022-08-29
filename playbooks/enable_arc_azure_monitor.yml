@@ -7,6 +7,7 @@
     - name: Fail if variables not defined
       ansible.builtin.assert:
         that:
+          - hosts is defined
           - resource_group_name is defined
           - service_principal_id is defined
           - service_principal_secret is defined
@@ -26,10 +27,6 @@
   gather_facts: false
   become: false
   tasks:
-    - name: Set linux hosts from inventory group
-      ansible.builtin.set_fact:
-        hosts: "{{ hostvars.values() | selectattr('group_names','contains', 'linux') | map(attribute='inventory_hostname') | list }}"
-
     - name: Enable Azure Monitor on Linux
       ansible.builtin.import_role:
         name: roles/arc

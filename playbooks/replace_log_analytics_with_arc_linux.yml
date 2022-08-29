@@ -48,12 +48,3 @@
         hosts: "{{ linux_hosts }}"
 
     # Add for Windows Hosts
-
-- name: Uninstall Log Analytics Agent
-  hosts: all
-  become: true
-  tasks:
-    - name: Uninstall Agent
-      ansible.builtin.import_role:
-        name: roles/log_analytics
-        tasks_from: uninstall_agent
