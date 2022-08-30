@@ -9,3 +9,7 @@ extensions:
     type_handler_version: 1.13
     type: OmsAgentForLinux # MicrosoftMonitoringAgent
     publisher: Microsoft.EnterpriseCloud.Monitoring
+  ad_ssh_login:
+    name: AADSSHLoginForLinux
+    type: AADSSHLoginForLinux
+    publisher: Microsoft.Azure.ActiveDirectory

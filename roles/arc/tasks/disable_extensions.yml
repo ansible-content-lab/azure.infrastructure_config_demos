@@ -1,0 +1,7 @@
+---
+- name: Set extension.use_dynamic_install to yes_without_prompt
+  ansible.builtin.command: az config set extension.use_dynamic_install=yes_without_prompt
+
+- name: Disable extensions on Arc connected devices
+  ansible.builtin.command: az connectedmachine extension delete --machine-name "{{ item.0 }}" --name "{{ item.1 }}" --resource-group "{{ resource_group_name }}" --no-wait --yes
+  loop: "{{ hosts | product(extension_names) | list }}"

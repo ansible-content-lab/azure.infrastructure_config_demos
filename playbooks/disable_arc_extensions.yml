@@ -8,12 +8,8 @@
       ansible.builtin.assert:
         that:
           - hosts is defined
-          - resource_group_name is defined
-          - service_principal_id is defined
-          - service_principal_secret is defined
-          - tenant_id is defined
           - region is defined
-          - subscription_id is defined
+          - extensions is defined
         fail_msg: "Required variables not set"
 
     - name: Install Arc Agent
@@ -21,7 +17,7 @@
         name: roles/arc
         tasks_from: install_agent
 
-- name: Enable Azure Monitor Arc Extension
+- name: Disable Azure Arc Extensions
   hosts: localhost
   connection: local
   gather_facts: false
@@ -30,4 +26,4 @@
     - name: Enable Azure Monitor on Linux
       ansible.builtin.import_role:
         name: roles/arc
-        tasks_from: enable_azure_monitor_agent_extension
+        tasks_from: disable_extensions

@@ -37,6 +37,8 @@ Click on the role name to be directed to the README specifically for that role.
 | `azure.infrastructure_config_demos.install_arc_agent.yml`                    | `roles.arc`                     | Installs the Azure Arc agent on inventory hosts.                                                                                               |
 | `azure.infrastructure_config_demos.replace_log_analytics_with_arc_linux.yml` | `roles.arc`                     | Installs the Arc agent, deploys the Azure Monitoring extension, and removes the log analytics extension or agent on Linux hosts.               |
 | `azure.infrastructure_config_demos.enable_arc_azure_monitor.yml`             | `roles.arc`                     | Enables the Azure Monitor extension on servers that have the Azure Arc agent installed.                                                        |
+| `azure.infrastructure_config_demos.enable_arc_extensions.yml`                | `roles.arc`                     | Enables multiple Arc extensions at the same time.                                                                                              |
+| `azure.infrastructure_config_demos.disable_arc_extensions.yml`               | `roles.arc`                     | Disables Arc extensions that are provided via extra vars.                                                                                      |
 
 <!--end collection content-->
 

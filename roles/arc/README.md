@@ -26,20 +26,24 @@ extensions:
 
 ### Install Agent
 
-This set of tasks installs the Azure Arc agent and connects those clients to Azure.
+Installs the Azure Arc agent and connects those clients to Azure on each host.
 
 ### Disconnect Agent
 
-This set of tasks uninstalls the Azure Arc agent from hosts.
+Runs the disconnect operation from Azure Arc agent on each hosts.
 
 ### Enable Azure Monitor Agent Extension
 
-Enables the Azure Monitor Agent extension within the Arc agent.  This is the modern logging and monitoring extension that will eventually replace the log analytics agent.
+Enables the Azure Monitor Agent extension within the Arc agent on each host.  This is the modern logging and monitoring extension that will eventually replace the log analytics agent.
+
+### Enable AD SSH Login Extension
+
+Enables the AD SSH Login extension within the Arc agent on each host.
 
 ## Enable Log Analytics Agent Extension
 
-Enables the Azure Log Analytics extension within the Arc agent.  This is a widely used logging agent for Azure connected servers, but Microsoft has announced its deprecation.
+Enables the Azure Log Analytics extension within the Arc agent on each host.  This is a widely used logging agent for Azure connected servers, but Microsoft has announced its deprecation.
 
-### Disable Log Analytics Extension
+### Disable Extensions
 
-Disables and removes the Azure Log Analytics extension through the Arc connected machine process.  This is used as part of the playbook that migrates from the Log Analytics extension to the Azure Monitor Agent extension.
+Disables extensions provided as extra vars on each host.
