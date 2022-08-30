@@ -11,27 +11,7 @@
         that:
           - linux_hosts is defined
           - resource_group_name is defined
-          - analytics_workspace_name is defined
         fail_msg: "Required variables not set"
-
-    - name: Get Log Analytics Workspace
-      azure.azcollection.azure_rm_loganalyticsworkspace_info:
-        resource_group: "{{ resource_group_name }}"
-        name: "{{ analytics_workspace_name }}"
-        show_intelligence_packs: true
-        show_management_groups: true
-        show_shared_keys: true
-        show_usages: true
-      register: analytics_workspaces
-
-    - name: Fail is workspace not found
-      ansible.builtin.fail:
-        msg: No Analytics Workspace found
-      when: analytics_workspaces.workspaces | length < 1
-
-    - name: Set workspace from results
-      ansible.builtin.set_fact:
-        analytics_workspace: "{{ analytics_workspaces.workspaces | first }}"
 
     - name: Enable Arc Azure Monitor Agent Extension on Linux Hosts
       ansible.builtin.import_role:
@@ -47,4 +27,4 @@
       vars:
         hosts: "{{ linux_hosts }}"
 
-    # Add for Windows Hosts
+    # TODO: Add for Windows Hosts
