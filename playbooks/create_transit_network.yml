@@ -31,6 +31,11 @@
       delegate_to: localhost
 
     - name: Configure SSH when the playbook has the proper variables
+      when:
+        - ansible_ssh_user is defined
+        - ansible_ssh_private_key_file is defined
+        - priv_network_hosts_pattern is defined
+        - priv_network_ssh_user is defined
       block:
         - name: Create SSH config file
           ansible.builtin.lineinfile:
@@ -54,4 +59,3 @@
             owner: "{{ ansible_ssh_user }}"
             group: "{{ ansible_ssh_user }}"
             mode: "0600"
-      when: ansible_ssh_user is defined and ansible_ssh_private_key_file is defined and priv_network_hosts_pattern is defined and priv_network_ssh_user is defined

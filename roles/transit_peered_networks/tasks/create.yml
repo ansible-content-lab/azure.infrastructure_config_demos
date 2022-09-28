@@ -1,5 +1,7 @@
 ---
 - name: Configure Resource Group
+  tags:
+    - rg
   block:
     - name: Create Resource Group
       azure.azcollection.azure_rm_resourcegroup:
@@ -8,10 +10,12 @@
         state: present
         tags:
           deployment: ansible
-  tags:
-    - rg
 
 - name: Configure Networking
+  tags:
+    - network
+    - peering
+    - routes
   block:
     - name: Create a route table
       azure.azcollection.azure_rm_routetable:
@@ -235,14 +239,12 @@
             access: Allow
             priority: 1001
             direction: Inbound
-  tags:
-    - network
-    - peering
-    - routes
 
 - name: Create Hub Networks Virtual Machines
+  tags:
+    - vm
+    - hub
   block:
-
     - name: Create hub VM virtual network interface card
       azure.azcollection.azure_rm_networkinterface:
         resource_group: "{{ resource_group_name }}"
@@ -285,11 +287,11 @@
         priority: "{{ priority | default('Spot') }}"
         tags:
           deployment: ansible
-  tags:
-    - vm
-    - hub
 
 - name: Create Spoke 1 Virtual Machines
+  tags:
+    - vm
+    - spoke1
   block:
     - name: Create spoke 1 VM virtual network interface card
       azure.azcollection.azure_rm_networkinterface:
@@ -332,11 +334,11 @@
         priority: "{{ priority | default('Spot') }}"
         tags:
           deployment: ansible
-  tags:
-    - vm
-    - spoke1
 
 - name: Create Spoke 2 Virtual Machines
+  tags:
+    - vm
+    - spoke2
   block:
     - name: Create DMZ VM public IP address
       azure.azcollection.azure_rm_publicipaddress:
@@ -400,6 +402,3 @@
         name: "{{ dmz_vm_public_ip.state.ip_address }}"
         groups: DMZ
         ansible_ssh_user: "{{ vm_username | default('azureuser') }}"
-  tags:
-    - vm
-    - spoke2

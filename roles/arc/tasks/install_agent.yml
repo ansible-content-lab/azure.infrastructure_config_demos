@@ -44,7 +44,7 @@
   register: azcmagent_lnx_connected
   ignore_errors: true
   when: ansible_system == 'Linux'
-  failed_when: (azcmagent_lnx_connected.rc not in [ 0, 16 ])
+  failed_when: (azcmagent_lnx_connected.rc not in [0, 16])
   changed_when: false
 
 - name: Check if the Connected Machine Agent has already been connected on Windows
@@ -52,7 +52,7 @@
   register: azcmagent_win_connected
   when: ansible_os_family == 'Windows'
   ignore_errors: true
-  failed_when: (azcmagent_win_connected.rc not in [ 0, 16 ])
+  failed_when: (azcmagent_win_connected.rc not in [0, 16])
   changed_when: false
 
 - name: Connect the Connected Machine Agent on Linux servers to Azure Arc
