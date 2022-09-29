@@ -1,0 +1,6 @@
+---
+vm_size: Standard_DS3_v2
+disk_type: Standard_LRS
+admin_user: azureuser
+rhel_vm_sku: "8_6"
+windows_vm_sku: 2022-Datacenter

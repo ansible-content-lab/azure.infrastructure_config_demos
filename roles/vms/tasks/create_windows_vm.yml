@@ -1,0 +1,67 @@
+---
+- name: Create Network Security Group that allows SSH and RDP
+  azure.azcollection.azure_rm_securitygroup:
+    resource_group: "{{ resource_group_name }}"
+    name: "{{ network_sec_group_name }}"
+    rules:
+      - name: RDP
+        protocol: Tcp
+        destination_port_range: 3389
+        access: Allow
+        priority: 1002
+        direction: Inbound
+    tags:
+      ansible-collection: azure.infrastructure_config_demos
+      ansible-role: vms
+      ansible-task: create_windows_vm
+
+- name: Create public IP address
+  azure.azcollection.azure_rm_publicipaddress:
+    resource_group: "{{ resource_group_name }}"
+    allocation_method: Static
+    name: "{{ public_ip_name }}"
+    tags:
+      ansible-collection: azure.infrastructure_config_demos
+      ansible-role: vms
+      ansible-task: create_windows_vm
+  register: ip_addr_results
+
+- name: Create virtual network interface card
+  azure.azcollection.azure_rm_networkinterface:
+    resource_group: "{{ resource_group_name }}"
+    name: "{{ nic_name }}"
+    virtual_network: "{{ vnet_name }}"
+    subnet: "{{ subnet_name }}"
+    public_ip_name: "{{ public_ip_name }}"
+    security_group: "{{ network_sec_group_name }}"
+  register: vnic_results
+
+- name: Create VM
+  azure.azcollection.azure_rm_virtualmachine:
+    resource_group: "{{ resource_group_name }}"
+    name: "{{ vm_name }}"
+    os_type: Windows
+    vm_size: "{{ vm_size }}"
+    admin_username: "{{ admin_user }}"
+    admin_password: "{{ admin_password }}"
+    network_interfaces: "{{ nic_name }}"
+    image:
+      offer: WindowsServer
+      publisher: MicrosoftWindowsServer
+      sku: "{{ windows_vm_sku }}"
+      version: latest
+    tags:
+      ansible-collection: azure.infrastructure_config_demos
+      ansible-role: vms
+      ansible-task: create_windows_vm
+
+- name: Dump Private IP for VM which will be created
+  ansible.builtin.debug:
+    msg: "Private IP Address: {{ vnic_results.state.ip_configuration.private_ip_address | default('') }} ---- Public IP Address: {{ ip_addr_results.state.ip_address | default('') }}"
+
+- name: Set Stat for Ansible Controller
+  ansible.builtin.set_stats:
+    data:
+      azure_vnic_public_ip: "{{ ip_addr_results.state.ip_address | default('') }}"
+      azure_vnic_private_ip: "{{ vnic_results.state.ip_configuration.private_ip_address | default('') }}"
+    per_host: false
