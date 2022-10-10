@@ -13,6 +13,9 @@
           - resource_group_name is defined
         fail_msg: "Required variables not set"
 
+    - name: Ensure that the az CLI has logged in with a service principal
+      ansible.builtin.command: "az login --service-principal -u {{ lookup('env', 'AZURE_CLIENT_ID') }} -p {{ lookup('env', 'AZURE_SECRET') }} --tenant {{ lookup('env', 'AZURE_TENANT') }}"
+
     - name: Set extension.use_dynamic_install to yes_without_prompt
       ansible.builtin.command: az config set extension.use_dynamic_install=yes_without_prompt
 
