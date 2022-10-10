@@ -7,7 +7,7 @@
     - azure.azcollection
   tasks:
     - name: test transit_peered_networks role
-      include_tasks:
+      ansible.builtin.include_tasks:
         file: tasks/transit_peered_networks.yml
         apply:
           tags:

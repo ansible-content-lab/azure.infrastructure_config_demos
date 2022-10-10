@@ -6,3 +6,7 @@
     intelligence_packs:
       Backup: "{{ backup | bool }}"
   register: analytics_workspace
+
+- name: Set analytics workspace stat
+  ansible.builtin.set_stats:
+    analytics_workspace: "{{ analytics_workspace }}"
