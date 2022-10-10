@@ -9,4 +9,5 @@
 
 - name: Set analytics workspace stat
   ansible.builtin.set_stats:
-    analytics_workspace: "{{ analytics_workspace }}"
+    data:
+      analytics_workspace: "{{ analytics_workspace }}"
