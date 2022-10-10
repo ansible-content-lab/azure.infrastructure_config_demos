@@ -13,6 +13,12 @@
           - resource_group_name is defined
         fail_msg: "Required variables not set"
 
+    - name: Set extension.use_dynamic_install to yes_without_prompt
+      ansible.builtin.command: az config set extension.use_dynamic_install=yes_without_prompt
+
+    - name: Ensure that the az connectedmachine extension is installed
+      ansible.builtin.command: az extension add --name connectedmachine -y
+
     - name: Enable Arc Azure Monitor Agent Extension on Linux Hosts
       ansible.builtin.import_role:
         name: roles/arc

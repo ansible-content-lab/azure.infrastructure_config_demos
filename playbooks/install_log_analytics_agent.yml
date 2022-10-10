@@ -4,9 +4,10 @@
   gather_facts: true
   become: true
   tasks:
-    - name: Deploy log analytics
+    - name: Install log analytics agent
       ansible.builtin.import_role:
         name: roles/log_analytics
         tasks_from: install_agent
       vars:
         analytics_workspace: "{{ workspace_name }}"
+      when: ansible_system == 'Linux'
