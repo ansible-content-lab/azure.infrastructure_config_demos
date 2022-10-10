@@ -4,4 +4,5 @@
     msg: "Please provide operation as 'create' or 'delete'"
   when: operation not in ['create', 'delete']
 
-- ansible.builtin.include_tasks: "{{ operation }}.yml"
+- name: Include operation tasks
+  ansible.builtin.include_tasks: "{{ operation }}.yml"
