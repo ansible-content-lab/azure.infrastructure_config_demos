@@ -5,11 +5,12 @@ exclude_paths:
   - test
 
 enable_list:
-  - empty-string-compare # opt-in
-  - no-log-password # opt-in
-  - no-same-owner # opt-in
+  - empty-string-compare
+  - no-log-password
+  - no-same-owner
   - yaml
 
 skip_list:
-  - package-latest
   - no-changed-when
+  - package-latest
+  - role-name[path]
