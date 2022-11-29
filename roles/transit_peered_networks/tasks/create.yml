@@ -258,7 +258,7 @@
 
     - name: Dump IP for VM which will be created
       ansible.builtin.debug:
-        msg: "Spoke 1 VM IP Address: {{ hub_vnic.state.ip_configuration.private_ip_address }}"
+        msg: "Hub VM IP Address: {{ hub_vnic.state.ip_configuration.private_ip_address }}"
 
     - name: Set Stat for Ansible Controller
       ansible.builtin.set_stats:
@@ -270,21 +270,21 @@
       azure.azcollection.azure_rm_virtualmachine:
         resource_group: "{{ resource_group_name }}"
         name: hub-vm
-        vm_size: "{{ vm_size | default('Standard_DS2_v2') }}"
-        managed_disk_type: "{{ disk_type | default('Standard_LRS') }}"
+        vm_size: "{{ vm_size }}"
+        managed_disk_type: "{{ vm_disk_type }}"
         admin_username: "{{ vm_username }}"
         ssh_password_enabled: false
         ssh_public_keys:
-          - path: "/home/{{ vm_username | default('azureuser') }}/.ssh/authorized_keys"
+          - path: "/home/{{ vm_username }}/.ssh/authorized_keys"
             key_data: "{{ ansible_ssh_pub_key }}"
         network_interfaces: "{{ hub_vnic.state.name }}"
         image:
           offer: RHEL
           publisher: RedHat
-          sku: "{{ vm_sku | default('8_5') }}"
+          sku: "{{ vm_sku }}"
           version: latest
-        max_price: "{{ max_price | default(-1) }}"
-        priority: "{{ priority | default('Spot') }}"
+        max_price: "{{ vm_max_price }}"
+        priority: "{{ vm_priority }}"
         tags:
           deployment: ansible
 
@@ -317,21 +317,21 @@
       azure.azcollection.azure_rm_virtualmachine:
         resource_group: "{{ resource_group_name }}"
         name: spoke-1-vm
-        vm_size: "{{ vm_size | default('Standard_DS2_v2') }}"
-        managed_disk_type: "{{ disk_type | default('Standard_LRS') }}"
-        admin_username: "{{ vm_username | default('azureuser') }}"
+        vm_size: "{{ vm_size }}"
+        managed_disk_type: "{{ vm_disk_type }}"
+        admin_username: "{{ vm_username }}"
         ssh_password_enabled: false
         ssh_public_keys:
-          - path: "/home/{{ vm_username | default('azureuser') }}/.ssh/authorized_keys"
+          - path: "/home/{{ vm_username }}/.ssh/authorized_keys"
             key_data: "{{ ansible_ssh_pub_key }}"
         network_interfaces: "{{ spoke1_vnic.state.name }}"
         image:
           offer: RHEL
           publisher: RedHat
-          sku: "{{ vm_sku | default('8_5') }}"
+          sku: "{{ vm_sku }}"
           version: latest
-        max_price: "{{ max_price | default(-1) }}"
-        priority: "{{ priority | default('Spot') }}"
+        max_price: "{{ vm_max_price }}"
+        priority: "{{ vm_priority }}"
         tags:
           deployment: ansible
 
@@ -379,21 +379,21 @@
       azure.azcollection.azure_rm_virtualmachine:
         resource_group: "{{ resource_group_name }}"
         name: spoke-2-vm
-        vm_size: "{{ vm_size | default('Standard_DS2_v2') }}"
-        managed_disk_type: "{{ disk_type | default('Standard_LRS') }}"
-        admin_username: "{{ vm_username | default('azureuser') }}"
+        vm_size: "{{ vm_size }}"
+        managed_disk_type: "{{ vm_disk_type }}"
+        admin_username: "{{ vm_username }}"
         ssh_password_enabled: false
         ssh_public_keys:
-          - path: "/home/{{ vm_username | default('azureuser') }}/.ssh/authorized_keys"
+          - path: "/home/{{ vm_username }}/.ssh/authorized_keys"
             key_data: "{{ ansible_ssh_pub_key }}"
         network_interfaces: "{{ spoke2_vnic.state.name }}"
         image:
           offer: RHEL
           publisher: RedHat
-          sku: "{{ vm_sku | default('8_5') }}"
+          sku: "{{ vm_sku }}"
           version: latest
-        max_price: "{{ max_price | default(-1) }}"
-        priority: "{{ priority | default('Spot') }}"
+        max_price: "{{ vm_max_price }}"
+        priority: "{{ vm_priority }}"
         tags:
           deployment: ansible
 
@@ -401,4 +401,14 @@
       ansible.builtin.add_host:
         name: "{{ dmz_vm_public_ip.state.ip_address }}"
         groups: DMZ
-        ansible_ssh_user: "{{ vm_username | default('azureuser') }}"
+        ansible_ssh_user: "{{ vm_username }}"
+        ansible_ssh_private_key_file: "{{ dmz_ansible_ssh_private_key_file }}"
+      when:
+        - dmz_ansible_ssh_private_key_file is defined
+
+    - name: Sleep for 5 seconds so that DMZ IPs have time to become available prior to any additional tasks
+      ansible.builtin.wait_for:
+        timeout: 5
+      delegate_to: localhost
+      when:
+        - dmz_ansible_ssh_private_key_file is defined

@@ -3,6 +3,7 @@ hub_vnet_name: hub-vnet
 hub_vnet_cidr: "172.16.0.0/23"
 hub_subnet_name: hub-subnet
 hub_subnet_cidr: "172.16.0.0/24"
+route_table_name: "hub-and-spoke-route-table"
 spoke1_vnet_name: spoke-1-vnet
 spoke1_vnet_cidr: "172.16.2.0/24"
 spoke1_subnet_name: spoke-1-subnet
@@ -11,12 +12,14 @@ spoke2_vnet_name: spoke-2-vnet
 spoke2_vnet_cidr: "172.16.3.0/24"
 spoke2_subnet_name: spoke-2-subnet
 spoke2_subnet_cidr: "172.16.3.0/24"
+ssh_security_group_name: ssh-security-group
 virtual_gw_name: hub-gateway
 virtual_gw_sku: Basic
 virtual_gw_subnet_cidr: "172.16.1.0/26"
 virtual_gw_vpn_type: route_based
-route_table_name: "hub-and-spoke-route-table"
-ssh_security_group_name: ssh-security-group
-rhel_vm_sku: "8_5"
+vm_disk_type: Standard_LRS
+vm_max_price: -1
+vm_priority: Spot
+vm_sku: "9_1"
 vm_size: Standard_A1_v2
 vm_username: azureuser
