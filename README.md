@@ -68,7 +68,64 @@ priv_network_ssh_user: azureuser
 
 ## Installation and Usage
 
-### Installing the Collection with the Ansible Galaxy CLI
+### Ansible Automation Controller or AWX
+
+#### Automated
+
+It is possible to use Ansible to configure Ansible Automation Platform so that your Ansible Automation Platform configuration is replicable, backed-up, and change sets can be referenced as git commits.  The [aoc.controller_demo_config](https://github.com/ansible-content-lab/aoc.controller_demo_config) project demonstrates how to use the Ansible CLI to configure all of the components of Ansible Automation Platform and can assist with recreating individual templates and workflows rapidly across Ansible Automation Platform environments.
+
+#### Manually
+
+Ensure that you are logged in to Ansible Automation Controller before proceeding with these steps.
+
+##### Creating the Project
+
+1. Click `Projects` in the left menu.
+2. Click the `Add` button.
+3. Enter the following fields:
+   * Name: `Ansible Cloud Content Lab - Azure Roles`
+   * Organization: `Default` (or your preferred organization)
+   * Execution Environment: `Cloud Services Execution Environment` (if using Ansible on Azure)
+     * If you need an execution environment with cloud collections, you can build your own through [community examples](https://github.com/scottharwell/cloud-ee) or use [pre-built](https://quay.io/repository/scottharwell/cloud-ee) (but unsupported) examples.
+   * Source Control Type: `Git`
+   * Source Control URL: `https://github.com/ansible-content-lab/azure.infrastructure_config_demos.git`
+4. Click the `Save` button.
+
+##### Creating Automation Templates
+
+Each automation template is equivalent to a playbook in this repository.  Repeat these steps for each template/playbook that you want to use and change the variables specific to the individual playbook.
+
+1. Click `Templates` in the left menu.
+2. Click the `Add` button.
+3. Ensure the following fields:
+   * Name: `lab.azure_roles.create_rhel_vm` (Any name will work -- use a convension that you can remember for template naming)
+   * Job Type: `Run`
+   * Inventory: `localhost` (You must have an inventory created with `localhost` as the host)
+   * Project: `Ansible Cloud Content Lab - Azure Roles`
+   * Playbook: `playbooks/create_rhel_vm.yml` (Use the name of the playbook in this collection)
+   * Credentials: `Azure Service Principal` (You must have an Azure Service Principal credential in order to use the Azure Collection)
+   * Variables: (Will differ per playbook)
+
+```yaml
+---
+resource_group_name: resource-group
+region: eastus
+vm_name: create-rhel-test
+nic_name: create-rhel-test-nic
+network_sec_group_name: create-rhel-test-sg
+public_ip_name: create-rhel-test-public-ip
+vnet_name: your-existing-vnet
+subnet_name: your-existing-subnet
+create_public_ip: true
+ssh_public_key: "" # Copy an RSA (Azure required) public key for VM access
+admin_password: ChangeMe # Set to a secure password
+```
+
+4. Click the `Save` button.
+
+You can now run the automation template by clicking the `Launch` button.
+
+### Local Installation (Ansible Galaxy CLI)
 
 Before using the this collection, you need to install it with the Ansible Galaxy CLI:
 
@@ -84,11 +141,11 @@ collections:
     version: main
 ```
 
-### Adding a Git Pre-Commit Hook
+## Adding a Git Pre-Commit Hook
 
 This repo includes a configuration file for `ansible-lint` to be run as a git [pre-commit](https://pre-commit.com/) hook. To install the hook, run `pre-commit install` from the root directory of this repo once you have the pre-commit utility installed on your machine.
 
-# License
+## License
 GNU General Public License v3.0 or later
 
 See [LICENSE](https://github.com/ansible-content-lab/lab.aws_roles/blob/main/LICENSE) to see the full text.
