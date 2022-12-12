@@ -78,7 +78,7 @@ It is possible to use Ansible to configure Ansible Automation Platform so that y
 
 Ensure that you are logged in to Ansible Automation Controller before proceeding with these steps.
 
-##### Creating the Project
+##### Create the Project
 
 1. Click `Projects` in the left menu.
 2. Click the `Add` button.
@@ -91,19 +91,19 @@ Ensure that you are logged in to Ansible Automation Controller before proceeding
    * Source Control URL: `https://github.com/ansible-content-lab/azure.infrastructure_config_demos.git`
 4. Click the `Save` button.
 
-##### Creating Automation Templates
+##### Create Automation Templates
 
 Each automation template is equivalent to a playbook in this repository.  Repeat these steps for each template/playbook that you want to use and change the variables specific to the individual playbook.
 
 1. Click `Templates` in the left menu.
 2. Click the `Add` button.
 3. Ensure the following fields:
-   * Name: `lab.azure_roles.create_rhel_vm` (Any name will work -- use a convension that you can remember for template naming)
+   * Name: `lab.azure_roles.create_rhel_vm` (Any name will work -- use a convention that you can remember for template naming)
    * Job Type: `Run`
    * Inventory: `localhost` (You must have an inventory created with `localhost` as the host)
    * Project: `Ansible Cloud Content Lab - Azure Roles`
    * Playbook: `playbooks/create_rhel_vm.yml` (Use the name of the playbook in this collection)
-   * Credentials: `Azure Service Principal` (You must have an Azure Service Principal credential in order to use the Azure Collection)
+   * Credentials: `Azure Service Principal` (You must have an Azure Service Principal credential in order to use the Azure collection)
    * Variables: (Will differ per playbook)
 
 ```yaml
@@ -146,6 +146,7 @@ collections:
 This repo includes a configuration file for `ansible-lint` to be run as a git [pre-commit](https://pre-commit.com/) hook. To install the hook, run `pre-commit install` from the root directory of this repo once you have the pre-commit utility installed on your machine.
 
 ## License
+
 GNU General Public License v3.0 or later
 
 See [LICENSE](https://github.com/ansible-content-lab/lab.aws_roles/blob/main/LICENSE) to see the full text.
