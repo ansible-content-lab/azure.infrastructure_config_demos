@@ -11,6 +11,5 @@ enable_list:
   - yaml
 
 skip_list:
-  - no-changed-when
   - package-latest
   - role-name[path]

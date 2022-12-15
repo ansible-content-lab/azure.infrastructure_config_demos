@@ -15,12 +15,18 @@
 
     - name: Ensure that the az CLI has logged in with a service principal
       ansible.builtin.command: "az login --service-principal -u {{ lookup('env', 'AZURE_CLIENT_ID') }} -p {{ lookup('env', 'AZURE_SECRET') }} --tenant {{ lookup('env', 'AZURE_TENANT') }}"
+      register: sp_login
+      changed_when: sp_login.rc != 0
 
     - name: Set extension.use_dynamic_install to yes_without_prompt
       ansible.builtin.command: az config set extension.use_dynamic_install=yes_without_prompt
+      register: dyn_install
+      changed_when: dyn_install.rc != 0
 
     - name: Ensure that the az connectedmachine extension is installed
       ansible.builtin.command: az extension add --name connectedmachine -y
+      register: conn_machine
+      changed_when: conn_machine.rc != 0
 
     - name: Enable Arc Azure Monitor Agent Extension on Linux Hosts
       ansible.builtin.import_role:

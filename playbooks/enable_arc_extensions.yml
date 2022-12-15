@@ -15,6 +15,8 @@
 
     - name: Ensure that the az CLI has logged in with a service principal
       ansible.builtin.command: "az login --service-principal -u {{ lookup('env', 'AZURE_CLIENT_ID') }} -p {{ lookup('env', 'AZURE_SECRET') }} --tenant {{ lookup('env', 'AZURE_TENANT') }}"
+      register: sp_login
+      changed_when: sp_login.rc != 0
 
     - name: Enable Azure Monitor on Linux
       ansible.builtin.import_role:

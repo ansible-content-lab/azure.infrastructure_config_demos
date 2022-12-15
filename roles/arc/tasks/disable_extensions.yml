@@ -2,3 +2,5 @@
 - name: Disable extensions on Arc connected devices
   ansible.builtin.command: az connectedmachine extension delete --machine-name "{{ item.0 }}" --name "{{ item.1 }}" --resource-group "{{ resource_group_name }}" --no-wait --yes
   loop: "{{ hosts | product(extension_names) | list }}"
+  register: sp_login
+  changed_when: sp_login.rc != 0
