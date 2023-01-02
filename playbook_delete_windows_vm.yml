@@ -1,5 +1,5 @@
 ---
-- name: Destroy hub and spoke network with virtual network gateway
+- name: Delete Windows Demo VM
   hosts: localhost
   connection: local
   gather_facts: false
@@ -9,12 +9,10 @@
     - name: Fail if variables not defined
       ansible.builtin.assert:
         that:
-          - region is defined
           - resource_group_name is defined
         fail_msg: "Required variables not set"
 
-    - name: Delete Transit Networking Model
+    - name: Delete Windows VMs
       ansible.builtin.import_role:
-        name: roles/transit_peered_networks
-      vars:
-        operation: delete
+        name: vms
+        tasks_from: delete_windows_vm

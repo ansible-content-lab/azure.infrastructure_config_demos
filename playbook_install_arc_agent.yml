@@ -17,5 +17,5 @@
 
     - name: Install Arc Agent
       ansible.builtin.import_role:
-        name: roles/arc
+        name: arc
         tasks_from: install_agent

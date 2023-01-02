@@ -20,10 +20,10 @@
 
     - name: Enable Azure Monitor on Linux
       ansible.builtin.import_role:
-        name: roles/arc
+        name: arc
         tasks_from: enable_azure_monitor_agent_extension
 
     - name: Enable AD SSH Login on Linux
       ansible.builtin.import_role:
-        name: roles/arc
+        name: arc
         tasks_from: enable_ad_ssh_login_extension

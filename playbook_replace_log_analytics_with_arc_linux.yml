@@ -30,14 +30,14 @@
 
     - name: Enable Arc Azure Monitor Agent Extension on Linux Hosts
       ansible.builtin.import_role:
-        name: roles/arc
+        name: arc
         tasks_from: enable_azure_monitor_agent_extension
       vars:
         hosts: "{{ linux_hosts }}"
 
     - name: Disable Arc Log Analytics Extension on Linux Hosts
       ansible.builtin.import_role:
-        name: roles/arc
+        name: arc
         tasks_from: disable_extensions
       vars:
         hosts: "{{ linux_hosts }}"

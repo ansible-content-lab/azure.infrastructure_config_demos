@@ -1,5 +1,5 @@
 ---
-- name: Delete Windows Demo VM
+- name: Delete RHEL Demo VM
   hosts: localhost
   connection: local
   gather_facts: false
@@ -12,7 +12,7 @@
           - resource_group_name is defined
         fail_msg: "Required variables not set"
 
-    - name: Delete Windows VMs
+    - name: Delete RHEL VMs
       ansible.builtin.import_role:
-        name: roles/vms
-        tasks_from: delete_windows_vm
+        name: vms
+        tasks_from: delete_rhel_vm

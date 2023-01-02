@@ -23,5 +23,5 @@
 
     - name: Create a Windows Server VM
       ansible.builtin.import_role:
-        name: roles/vms
+        name: vms
         tasks_from: create_windows_vm

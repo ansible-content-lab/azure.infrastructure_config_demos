@@ -1,5 +1,5 @@
 ---
-- name: Delete RHEL Demo VM
+- name: Deploy Azure Log Analytics
   hosts: localhost
   connection: local
   gather_facts: false
@@ -10,9 +10,10 @@
       ansible.builtin.assert:
         that:
           - resource_group_name is defined
+          - workspace_name is defined
         fail_msg: "Required variables not set"
 
-    - name: Delete RHEL VMs
+    - name: Deploy log analytics workspace
       ansible.builtin.import_role:
-        name: roles/vms
-        tasks_from: delete_rhel_vm
+        name: log_analytics
+        tasks_from: create_workspace

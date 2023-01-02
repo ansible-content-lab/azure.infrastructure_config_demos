@@ -6,5 +6,5 @@
   tasks:
     - name: Remove Log Analytics Agent
       ansible.builtin.import_role:
-        name: roles/log_analytics
+        name: log_analytics
         tasks_from: uninstall_agent

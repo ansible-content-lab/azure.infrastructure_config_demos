@@ -92,7 +92,7 @@
             subnet: "{{ gw_subnet.state.name }}"
         sku: "{{ virtual_gw_sku }}"
         virtual_network: "{{ hub_vnet.state.name }}"
-        vpn_type: "{{ virtual_gw_vpn_type }}"
+        vpn_type: "{{ virtual_gw_vpn_type }}" # noqa args[module]
         tags:
           deployment: ansible
       register: hub_gw
