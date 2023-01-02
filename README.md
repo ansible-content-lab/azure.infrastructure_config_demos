@@ -106,20 +106,20 @@ Each automation template is equivalent to a playbook in this repository.  Repeat
    * Credentials: `Azure Service Principal` (You must have an Azure Service Principal credential in order to use the Azure collection)
    * Variables: (Will differ per playbook)
 
-```yaml
----
-resource_group_name: resource-group
-region: eastus
-vm_name: create-rhel-test
-nic_name: create-rhel-test-nic
-network_sec_group_name: create-rhel-test-sg
-public_ip_name: create-rhel-test-public-ip
-vnet_name: your-existing-vnet
-subnet_name: your-existing-subnet
-create_public_ip: true
-ssh_public_key: "" # Copy an RSA (Azure required) public key for VM access
-admin_password: ChangeMe # Set to a secure password
-```
+    ```yaml
+    ---
+    resource_group_name: resource-group
+    region: eastus
+    vm_name: create-rhel-test
+    nic_name: create-rhel-test-nic
+    network_sec_group_name: create-rhel-test-sg
+    public_ip_name: create-rhel-test-public-ip
+    vnet_name: your-existing-vnet
+    subnet_name: your-existing-subnet
+    create_public_ip: true
+    ssh_public_key: "" # Copy an RSA (Azure required) public key for VM access
+    admin_password: ChangeMe # Set to a secure password
+    ```
 
 4. Click the `Save` button.
 
