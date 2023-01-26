@@ -10,10 +10,10 @@
       ansible.builtin.assert:
         that:
           - region is defined
-          - resource_group_name is defined
+          - resource_group is defined
         fail_msg: "Required variables not set"
 
     - name: Create resource group
       azure.azcollection.azure_rm_resourcegroup:
-        name: "{{ resource_group_name }}"
+        name: "{{ resource_group }}"
         location: "{{ region }}"

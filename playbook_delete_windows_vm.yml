@@ -9,7 +9,7 @@
     - name: Fail if variables not defined
       ansible.builtin.assert:
         that:
-          - resource_group_name is defined
+          - resource_group is defined
         fail_msg: "Required variables not set"
 
     - name: Delete Windows VMs

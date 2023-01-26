@@ -15,7 +15,7 @@ The following variables are used during deployment and can be configured as extr
 ```yaml
 ---
 region: eastus
-resource_group_name: existing_resource_group_name
+resource_group: existing_resource_group
 nic_name: new_nic_name
 network_sec_group_name: new_security_group_name
 public_ip_name: new_public_ip_name
@@ -49,7 +49,7 @@ The following variables are used during deployment and can be configured as extr
 ```yaml
 ---
 region: eastus
-resource_group_name: existing_resource_group_name
+resource_group: existing_resource_group
 nic_name: new_nic_name
 network_sec_group_name: new_security_group_name
 public_ip_name: new_public_ip_name

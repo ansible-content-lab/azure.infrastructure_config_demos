@@ -10,7 +10,7 @@
       ansible.builtin.assert:
         that:
           - region is defined
-          - resource_group_name is defined
+          - resource_group is defined
           - nic_name is defined
           - network_sec_group_name is defined
           - public_ip_name is defined

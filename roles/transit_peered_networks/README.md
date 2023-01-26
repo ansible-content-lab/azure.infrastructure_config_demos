@@ -23,7 +23,7 @@ The `ansible_ssh_pub_key` file is set as the public access key on all VMs deploy
 ```yaml
 ---
 region: eastus
-resource_group_name: rg-transit-routing-demo
+resource_group: rg-transit-routing-demo
 ansible_ssh_pub_key: ~/.ssh/id_rsa_azure_demo.pub
 ```
 

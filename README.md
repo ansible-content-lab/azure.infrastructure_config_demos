@@ -109,7 +109,7 @@ Each automation template is equivalent to a playbook in this repository.  Repeat
 
     ```yaml
     ---
-    resource_group_name: resource-group
+    resource_group: resource-group
     region: eastus
     vm_name: create-rhel-test
     nic_name: create-rhel-test-nic

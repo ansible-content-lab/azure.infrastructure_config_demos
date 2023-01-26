@@ -11,7 +11,7 @@ The following variables are used when deploying or destroying a Log Analytics wo
 ```yaml
 ---
 workspace_name: log-ws
-resource_group_name: rg-logs
+resource_group: rg-logs
 ```
 
 ## Tasks

@@ -10,7 +10,7 @@
       ansible.builtin.assert:
         that:
           - linux_hosts is defined
-          - resource_group_name is defined
+          - resource_group is defined
         fail_msg: "Required variables not set"
 
     - name: Ensure that the az CLI has logged in with a service principal
@@ -31,16 +31,19 @@
     - name: Enable Arc Azure Monitor Agent Extension on Linux Hosts
       ansible.builtin.import_role:
         name: arc
-        tasks_from: enable_azure_monitor_agent_extension
+        tasks_from: enable_arc_extension
       vars:
-        hosts: "{{ linux_hosts }}"
+        arc_hosts: "{{ linux_hosts }}"
+        name: "{{ extensions.azure_monitor_agent.name }}"
+        type: "{{ extensions.azure_monitor_agent.type }}"
+        publisher: "{{ extensions.azure_monitor_agent.publisher }}"
 
     - name: Disable Arc Log Analytics Extension on Linux Hosts
       ansible.builtin.import_role:
         name: arc
         tasks_from: disable_extensions
       vars:
-        hosts: "{{ linux_hosts }}"
+        arc_hosts: "{{ linux_hosts }}"
         extension_names:
           - "{{ extensions.log_analytics_agent.name }}"
 

@@ -14,3 +14,4 @@ skip_list:
   - package-latest
   - role-name[path]
   - yaml[line-length]
+  - galaxy[no-changelog]

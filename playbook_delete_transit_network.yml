@@ -10,7 +10,7 @@
       ansible.builtin.assert:
         that:
           - region is defined
-          - resource_group_name is defined
+          - resource_group is defined
         fail_msg: "Required variables not set"
 
     - name: Delete Transit Networking Model

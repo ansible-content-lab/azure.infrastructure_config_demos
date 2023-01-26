@@ -7,7 +7,7 @@
     - name: Fail if variables not defined
       ansible.builtin.assert:
         that:
-          - resource_group_name is defined
+          - resource_group is defined
           - service_principal_id is defined
           - service_principal_secret is defined
           - tenant_id is defined

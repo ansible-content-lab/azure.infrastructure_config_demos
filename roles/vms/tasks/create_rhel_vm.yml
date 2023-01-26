@@ -1,7 +1,7 @@
 ---
 - name: Create Network Security Group that allows SSH
   azure.azcollection.azure_rm_securitygroup:
-    resource_group: "{{ resource_group_name }}"
+    resource_group: "{{ resource_group }}"
     name: "{{ network_sec_group_name }}"
     rules:
       - name: SSH
@@ -17,7 +17,7 @@
 
 - name: Create virtual network interface card with internal ip
   azure.azcollection.azure_rm_networkinterface:
-    resource_group: "{{ resource_group_name }}"
+    resource_group: "{{ resource_group }}"
     name: "{{ nic_name }}"
     virtual_network: "{{ vnet_name }}"
     subnet: "{{ subnet_name }}"
@@ -31,7 +31,7 @@
 
 - name: Create public IP address
   azure.azcollection.azure_rm_publicipaddress:
-    resource_group: "{{ resource_group_name }}"
+    resource_group: "{{ resource_group }}"
     allocation_method: Static
     name: "{{ public_ip_name }}"
     tags:
@@ -43,7 +43,7 @@
 
 - name: Create virtual network interface card with external ip
   azure.azcollection.azure_rm_networkinterface:
-    resource_group: "{{ resource_group_name }}"
+    resource_group: "{{ resource_group }}"
     name: "{{ nic_name }}"
     virtual_network: "{{ vnet_name }}"
     subnet: "{{ subnet_name }}"
@@ -58,7 +58,7 @@
 
 - name: Create VM
   azure.azcollection.azure_rm_virtualmachine:
-    resource_group: "{{ resource_group_name }}"
+    resource_group: "{{ resource_group }}"
     name: "{{ vm_name }}"
     vm_size: "{{ vm_size }}"
     managed_disk_type: "{{ disk_type }}"

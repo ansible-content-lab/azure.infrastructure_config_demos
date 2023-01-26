@@ -5,7 +5,7 @@
   block:
     - name: Create Resource Group
       azure.azcollection.azure_rm_resourcegroup:
-        name: "{{ resource_group_name }}"
+        name: "{{ resource_group }}"
         location: "{{ region }}"
         state: present
         tags:
@@ -19,7 +19,7 @@
   block:
     - name: Create a route table
       azure.azcollection.azure_rm_routetable:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "{{ route_table_name }}"
         disable_bgp_route_propagation: true
         tags:
@@ -28,7 +28,7 @@
 
     - name: Create Hub VNET
       azure.azcollection.azure_rm_virtualnetwork:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "{{ hub_vnet_name }}"
         address_prefixes_cidr:
           - "{{ hub_vnet_cidr }}"
@@ -45,7 +45,7 @@
 
     - name: Create Hub Subnet
       azure.azcollection.azure_rm_subnet:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "{{ hub_subnet_name }}"
         virtual_network_name: "{{ hub_vnet.state.name }}"
         address_prefix_cidr: "{{ hub_subnet_cidr }}"
@@ -54,7 +54,7 @@
 
     - name: Create public ip for virtual gateway for VPN connections
       azure.azcollection.azure_rm_publicipaddress:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "{{ virtual_gw_name }}-public-ip"
         allocation_method: dynamic # dynamic required for vgw
         tags:
@@ -69,7 +69,7 @@
 
     - name: Create Hub Subnet
       azure.azcollection.azure_rm_subnet:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: GatewaySubnet
         virtual_network_name: "{{ hub_vnet.state.name }}"
         address_prefix_cidr: "{{ virtual_gw_subnet_cidr }}"
@@ -83,7 +83,7 @@
     # This step can take a very long time...30 mins +
     - name: Create virtual network gateway
       azure.azcollection.azure_rm_virtualnetworkgateway:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "{{ virtual_gw_name }}"
         ip_configurations:
           - name: "{{ virtual_gw_name }}-ip"
@@ -99,7 +99,7 @@
 
     - name: Create Spoke1 VNET
       azure.azcollection.azure_rm_virtualnetwork:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "{{ spoke1_vnet_name }}"
         address_prefixes_cidr:
           - "{{ spoke1_vnet_cidr }}"
@@ -116,7 +116,7 @@
 
     - name: Create Spoke1 Subnet
       azure.azcollection.azure_rm_subnet:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "{{ spoke1_subnet_name }}"
         virtual_network_name: "{{ spoke1_vnet.state.name }}"
         address_prefix_cidr: "{{ spoke1_subnet_cidr }}"
@@ -126,7 +126,7 @@
 
     - name: Create Spoke2 VNET
       azure.azcollection.azure_rm_virtualnetwork:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "{{ spoke2_vnet_name }}"
         address_prefixes_cidr:
           - "{{ spoke2_vnet_cidr }}"
@@ -143,7 +143,7 @@
 
     - name: Create Spoke2 Subnet
       azure.azcollection.azure_rm_subnet:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "{{ spoke2_subnet_name }}"
         virtual_network_name: "{{ spoke2_vnet.state.name }}"
         address_prefix_cidr: "{{ spoke2_subnet_cidr }}"
@@ -153,11 +153,11 @@
 
     - name: Peer hub to spoke 1
       azure.azcollection.azure_rm_virtualnetworkpeering:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         virtual_network: "{{ hub_vnet_name }}"
         name: hub_TO_spoke1
         remote_virtual_network:
-          resource_group: "{{ resource_group_name }}"
+          resource_group: "{{ resource_group }}"
           name: "{{ spoke1_vnet_name }}"
         allow_virtual_network_access: true
         allow_forwarded_traffic: true
@@ -166,11 +166,11 @@
 
     - name: Peer spoke 1 to hub
       azure.azcollection.azure_rm_virtualnetworkpeering:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         virtual_network: "{{ spoke1_vnet_name }}"
         name: spoke1_TO_hub
         remote_virtual_network:
-          resource_group: "{{ resource_group_name }}"
+          resource_group: "{{ resource_group }}"
           name: "{{ hub_vnet_name }}"
         allow_virtual_network_access: true
         allow_forwarded_traffic: true
@@ -179,11 +179,11 @@
 
     - name: Peer hub to spoke 2
       azure.azcollection.azure_rm_virtualnetworkpeering:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         virtual_network: "{{ hub_vnet_name }}"
         name: hub_TO_spoke2
         remote_virtual_network:
-          resource_group: "{{ resource_group_name }}"
+          resource_group: "{{ resource_group }}"
           name: "{{ spoke2_vnet_name }}"
         allow_virtual_network_access: true
         allow_forwarded_traffic: true
@@ -192,11 +192,11 @@
 
     - name: Peer spoke 2 to hub
       azure.azcollection.azure_rm_virtualnetworkpeering:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         virtual_network: "{{ spoke2_vnet_name }}"
         name: spoke2_TO_hub
         remote_virtual_network:
-          resource_group: "{{ resource_group_name }}"
+          resource_group: "{{ resource_group }}"
           name: "{{ hub_vnet_name }}"
         allow_virtual_network_access: true
         allow_forwarded_traffic: true
@@ -205,7 +205,7 @@
 
     - name: Create route to spoke 1
       azure.azcollection.azure_rm_route:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "{{ spoke1_vnet_name }}-route"
         address_prefix: "{{ spoke1_vnet_cidr }}"
         next_hop_type: virtual_network_gateway
@@ -213,7 +213,7 @@
 
     - name: Create route to spoke 2
       azure.azcollection.azure_rm_route:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "{{ spoke2_vnet_name }}-route"
         address_prefix: "{{ spoke2_vnet_cidr }}"
         next_hop_type: virtual_network_gateway
@@ -221,7 +221,7 @@
 
     - name: Create route to VPN
       azure.azcollection.azure_rm_route:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "vpn-route"
         address_prefix: "{{ vpn_cidr }}"
         next_hop_type: virtual_network_gateway
@@ -230,7 +230,7 @@
 
     - name: Create Network Security Group that allows SSH
       azure.azcollection.azure_rm_securitygroup:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: "{{ ssh_security_group_name }}"
         rules:
           - name: SSH
@@ -247,7 +247,7 @@
   block:
     - name: Create hub VM virtual network interface card
       azure.azcollection.azure_rm_networkinterface:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: hub-vm-pub-nic
         virtual_network: "{{ hub_vnet_name }}"
         subnet: "{{ hub_subnet_name }}"
@@ -268,7 +268,7 @@
 
     - name: Create hub VM
       azure.azcollection.azure_rm_virtualmachine:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: hub-vm
         vm_size: "{{ vm_size }}"
         managed_disk_type: "{{ vm_disk_type }}"
@@ -295,7 +295,7 @@
   block:
     - name: Create spoke 1 VM virtual network interface card
       azure.azcollection.azure_rm_networkinterface:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: spoke-1-vm-nic
         virtual_network: "{{ spoke1_vnet_name }}"
         subnet: "{{ spoke1_subnet_name }}"
@@ -315,7 +315,7 @@
 
     - name: Create spoke 1 VM
       azure.azcollection.azure_rm_virtualmachine:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: spoke-1-vm
         vm_size: "{{ vm_size }}"
         managed_disk_type: "{{ vm_disk_type }}"
@@ -342,7 +342,7 @@
   block:
     - name: Create DMZ VM public IP address
       azure.azcollection.azure_rm_publicipaddress:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         allocation_method: Static
         name: dmz-vm-public-ip
         tags:
@@ -355,7 +355,7 @@
 
     - name: Create spoke 2 VM virtual network interface card
       azure.azcollection.azure_rm_networkinterface:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: spoke-2-vm-nic
         public_ip_name: "{{ dmz_vm_public_ip.state.name }}"
         virtual_network: "{{ spoke2_vnet_name }}"
@@ -377,7 +377,7 @@
 
     - name: Create spoke 2 VM
       azure.azcollection.azure_rm_virtualmachine:
-        resource_group: "{{ resource_group_name }}"
+        resource_group: "{{ resource_group }}"
         name: spoke-2-vm
         vm_size: "{{ vm_size }}"
         managed_disk_type: "{{ vm_disk_type }}"

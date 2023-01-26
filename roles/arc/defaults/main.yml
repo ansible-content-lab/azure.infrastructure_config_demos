@@ -1,15 +1,35 @@
 ---
 extensions:
+  azure_key_vault:
+    name: KeyVaultForLinux
+    type: KeyVaultForLinux
+    publisher: Microsoft.Azure.Key.Vault
+  azure_hybrid_runbook:
+    name: HybridWorkerForLinux
+    type: HybridWorkerForLinux
+    publisher: Microsoft.Compute
   azure_monitor_agent:
     name: AzureMonitorLinuxAgent # AzureMonitorWindowsAgent
     type: AzureMonitorLinuxAgent # AzureMonitorWindowsAgent
     publisher: Microsoft.Azure.Monitor
+  azure_monitor_for_vms:
+    name: DependencyAgentLinux
+    type: DependencyAgentLinux
+    publisher: Microsoft.Azure.Monitoring.DependencyAgent
+  ad_ssh_login:
+    name: AADSSHLoginForLinux
+    type: AADSSHLoginForLinux
+    publisher: Microsoft.Azure.ActiveDirectory
+  custom_script:
+    name: CustomScript
+    type: CustomScript
+    publisher: Microsoft.Azure.Extensions
   log_analytics_agent:
     name: OmsAgentForLinux # MicrosoftMonitoringAgent
     type_handler_version: 1.13
     type: OmsAgentForLinux # MicrosoftMonitoringAgent
     publisher: Microsoft.EnterpriseCloud.Monitoring
-  ad_ssh_login:
-    name: AADSSHLoginForLinux
-    type: AADSSHLoginForLinux
-    publisher: Microsoft.Azure.ActiveDirectory
+  microsoft_defender:
+    name: LinuxAgent.AzureSecurityCenter
+    type: LinuxAgent.AzureSecurityCenter
+    publisher: Qualys

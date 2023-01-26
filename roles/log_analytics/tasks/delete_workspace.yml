@@ -1,6 +1,6 @@
 ---
 - name: Delete log analytics workspace
   azure.azcollection.azure_rm_loganalyticsworkspace:
-    resource_group: "{{ resource_group_name }}"
+    resource_group: "{{ resource_group }}"
     name: "{{ workspace_name }}"
     state: absent

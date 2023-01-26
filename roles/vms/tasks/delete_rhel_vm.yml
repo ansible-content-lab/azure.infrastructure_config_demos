@@ -1,7 +1,7 @@
 ---
 - name: Get Demo VM by tags
   azure.azcollection.azure_rm_virtualmachine_info:
-    resource_group: "{{ resource_group_name }}"
+    resource_group: "{{ resource_group }}"
     tags:
       - ansible-collection:azure.infrastructure_config_demos
       - ansible-role:vms
@@ -10,7 +10,7 @@
 
 - name: Delete VM
   azure.azcollection.azure_rm_virtualmachine:
-    resource_group: "{{ resource_group_name }}"
+    resource_group: "{{ resource_group }}"
     name: "{{ vm_results.vms[0].name }}"
     state: absent
   when:
@@ -19,7 +19,7 @@
 
 - name: Get Security Group by tags
   azure.azcollection.azure_rm_securitygroup_info:
-    resource_group: "{{ resource_group_name }}"
+    resource_group: "{{ resource_group }}"
     tags:
       - ansible-collection:azure.infrastructure_config_demos
       - ansible-role:vms
@@ -28,7 +28,7 @@
 
 - name: Delete Security Group
   azure.azcollection.azure_rm_securitygroup:
-    resource_group: "{{ resource_group_name }}"
+    resource_group: "{{ resource_group }}"
     name: "{{ sg_results.securitygroups[0].name }}"
     state: absent
   when:
