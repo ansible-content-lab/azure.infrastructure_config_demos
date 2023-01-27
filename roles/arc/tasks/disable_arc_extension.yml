@@ -11,10 +11,6 @@
   register: results
   changed_when: results.rc != 0
 
-- name: Debug
-  ansible.builtin.debug:
-    var: results
-
 - name: Register Stats
   ansible.builtin.set_stats:
     data:

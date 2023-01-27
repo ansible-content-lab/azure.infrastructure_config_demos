@@ -16,10 +16,6 @@
   changed_when: results.rc != 0
   failed_when: ("ERROR" in results.stderr)
 
-- name: Debug Enablement
-  ansible.builtin.debug:
-    var: results
-
 - name: Register Enablement
   ansible.builtin.set_stats:
     data:
