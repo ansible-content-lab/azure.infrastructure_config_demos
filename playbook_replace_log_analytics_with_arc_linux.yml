@@ -41,10 +41,9 @@
     - name: Disable Arc Log Analytics Extension on Linux Hosts
       ansible.builtin.import_role:
         name: arc
-        tasks_from: disable_extensions
+        tasks_from: disable_arc_extension
       vars:
         arc_hosts: "{{ linux_hosts }}"
-        extension_names:
-          - "{{ extensions.log_analytics_agent.name }}"
+        extension: "{{ extensions.log_analytics_agent.name }}"
 
     # TODO: Add for Windows Hosts

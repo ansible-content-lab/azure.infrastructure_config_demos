@@ -1,0 +1,19 @@
+---
+- name: Disable Azure Arc Extension
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Fail if variables not defined
+      ansible.builtin.assert:
+        that:
+          - arc_hosts is defined
+          - region is defined
+          - extension
+        fail_msg: "Required variables not set"
+
+    - name: Enable Azure Monitor on Linux
+      ansible.builtin.import_role:
+        name: arc
+        tasks_from: disable_arc_extension

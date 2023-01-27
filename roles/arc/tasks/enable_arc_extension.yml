@@ -1,26 +1,26 @@
 ---
-- name: Enable the AD SSH login extension on Arc connected devices
+- name: Enable Azure Arc Extension
   ansible.builtin.shell: |
     az connectedmachine extension create \
     --machine-name "{{ item }}" \
-    --name "{{ extensions.ad_ssh_login.name }}" \
+    --name "{{ name }}" \
     --location "{{ region }}" \
     --resource-group "{{ resource_group }}" \
-    --type "{{ extensions.ad_ssh_login.type }}" \
-    --publisher "{{ extensions.ad_ssh_login.publisher }}" \
+    --type "{{ type }}" \
+    --publisher "{{ publisher }}" \
     --enable-auto-upgrade true \
     --auto-upgrade-minor true \
     --no-wait
   loop: "{{ arc_hosts }}"
-  register: create_extension_results
-  changed_when: create_extension_results.rc != 0
-  failed_when: ("ERROR" in create_extension_results.stderr)
+  register: results
+  changed_when: results.rc != 0
+  failed_when: ("ERROR" in results.stderr)
 
 - name: Debug Enablement
   ansible.builtin.debug:
-    var: create_extension_results
+    var: results
 
 - name: Register Enablement
   ansible.builtin.set_stats:
     data:
-      arc_enablement_results: create_extension_results
+      arc_enablement_results: results

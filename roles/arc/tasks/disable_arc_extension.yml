@@ -1,0 +1,21 @@
+---
+- name: Disable extensions on Arc connected devices
+  ansible.builtin.command: |
+    az connectedmachine extension delete \
+    --machine-name "{{ item }}" \
+    --name "{{ extension }}" \
+    --resource-group "{{ resource_group }}" \
+    --no-wait \
+    --yes
+  loop: "{{ arc_hosts }}"
+  register: results
+  changed_when: results.rc != 0
+
+- name: Debug
+  ansible.builtin.debug:
+    var: results
+
+- name: Register Stats
+  ansible.builtin.set_stats:
+    data:
+      arc_enablement_results: results

@@ -40,8 +40,8 @@ Click on the role name to be directed to the README specifically for that role.
 | `playbook_install_arc_agent.yml`                    | `roles.arc`                     | Installs the Azure Arc agent on inventory hosts.                                                                                               |
 | `playbook_replace_log_analytics_with_arc_linux.yml` | `roles.arc`                     | Installs the Arc agent, deploys the Azure Monitoring extension, and removes the log analytics extension or agent on Linux hosts.               |
 | `playbook_enable_arc_azure_monitor.yml`             | `roles.arc`                     | Enables the Azure Monitor extension on servers that have the Azure Arc agent installed.                                                        |
-| `playbook_enable_arc_extensions.yml`                | `roles.arc`                     | Enables multiple Arc extensions at the same time.                                                                                              |
-| `playbook_disable_arc_extensions.yml`               | `roles.arc`                     | Disables Arc extensions that are provided via extra vars.                                                                                      |
+| `playbook_enable_arc_extension.yml`                 | `roles.arc`                     | Enables an Azure Arc extension.                                                                                                                |
+| `playbook_disable_arc_extension.yml`                | `roles.arc`                     | Disables an Azure Arc extension.                                                                                                               |
 <!--end collection content-->
 
 #### Create Network Playbooks
