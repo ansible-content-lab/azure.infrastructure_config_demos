@@ -19,6 +19,26 @@
       register: sp_login
       changed_when: sp_login.rc != 0
 
+    - name: Enable Key Vault on Linux
+      ansible.builtin.import_role:
+        name: arc
+        tasks_from: enable_arc_extension
+      vars:
+        name: "{{ extensions.azure_key_vault.name }}"
+        type: "{{ extensions.azure_key_vault.type }}"
+        publisher: "{{ extensions.azure_key_vault.publisher }}"
+      when: extension == "azure_key_vault"
+
+    - name: Enable Hybrid Worker on Linux
+      ansible.builtin.import_role:
+        name: arc
+        tasks_from: enable_arc_extension
+      vars:
+        name: "{{ extensions.azure_hybrid_runbook.name }}"
+        type: "{{ extensions.azure_hybrid_runbook.type }}"
+        publisher: "{{ extensions.azure_hybrid_runbook.publisher }}"
+      when: extension == "azure_hybrid_runbook"
+
     - name: Enable Azure Monitor on Linux
       ansible.builtin.import_role:
         name: arc
@@ -29,15 +49,15 @@
         publisher: "{{ extensions.azure_monitor_agent.publisher }}"
       when: extension == "azure_monitor_agent"
 
-    - name: Enable Azure Log Analytics on Linux
+    - name: Enable Azure Monitor for VMs Linux
       ansible.builtin.import_role:
         name: arc
         tasks_from: enable_arc_extension
       vars:
-        name: "{{ extensions.log_analytics_agent.name }}"
-        type: "{{ extensions.log_analytics_agent.type }}"
-        publisher: "{{ extensions.log_analytics_agent.publisher }}"
-      when: extension == "log_analytics_agent"
+        name: "{{ extensions.azure_monitor_for_vms.name }}"
+        type: "{{ extensions.azure_monitor_for_vms.type }}"
+        publisher: "{{ extensions.azure_monitor_for_vms.publisher }}"
+      when: extension == "azure_monitor_for_vms"
 
     - name: Enable AD SSH Login on Linux
       ansible.builtin.import_role:
@@ -48,6 +68,26 @@
         type: "{{ extensions.ad_ssh_login.type }}"
         publisher: "{{ extensions.ad_ssh_login.publisher }}"
       when: extension == "ad_ssh_login"
+
+    - name: Enable Custom Scripts on Linux
+      ansible.builtin.import_role:
+        name: arc
+        tasks_from: enable_arc_extension
+      vars:
+        name: "{{ extensions.custom_script.name }}"
+        type: "{{ extensions.custom_script.type }}"
+        publisher: "{{ extensions.custom_script.publisher }}"
+      when: extension == "custom_script"
+
+    - name: Enable Azure Log Analytics on Linux
+      ansible.builtin.import_role:
+        name: arc
+        tasks_from: enable_arc_extension
+      vars:
+        name: "{{ extensions.log_analytics_agent.name }}"
+        type: "{{ extensions.log_analytics_agent.type }}"
+        publisher: "{{ extensions.log_analytics_agent.publisher }}"
+      when: extension == "log_analytics_agent"
 
     - name: Enable Microsoft Defender on Linux
       ansible.builtin.import_role:
