@@ -3,8 +3,6 @@
   hosts: localhost
   connection: local
   gather_facts: false
-  collections:
-    - azure.azcollection
   tasks:
     - name: Fail if variables not defined
       ansible.builtin.assert:
