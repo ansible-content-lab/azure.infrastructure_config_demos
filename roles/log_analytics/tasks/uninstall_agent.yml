@@ -9,6 +9,9 @@
 
 - name: Uninstall Agent on Linux servers
   ansible.builtin.command: "sh /opt/microsoft/omsagent/bin/uninstall"
+  register: uninstall_cmd
   when: ansible_system == 'Linux' and log_agent_exists.stat.exists
+  failed_when: uninstall_cmd.rc == 1
+  changed_when: uninstall_cmd.rc != 1
 
   # Add for Windows servers

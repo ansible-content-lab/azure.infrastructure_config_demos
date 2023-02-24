@@ -38,3 +38,4 @@
   register: install_result
   failed_when:
     - install_result.rc == 1 # This script has a bug regarding OpenSSL versions and so we only fail when response code is 1
+  changed_when: install_result.rc != 1
