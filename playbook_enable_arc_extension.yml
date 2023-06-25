@@ -24,9 +24,9 @@
         name: arc
         tasks_from: enable_arc_extension
       vars:
-        name: "{{ extensions.azure_key_vault.name }}"
-        type: "{{ extensions.azure_key_vault.type }}"
-        publisher: "{{ extensions.azure_key_vault.publisher }}"
+        arc_name: "{{ extensions.azure_key_vault.name }}"
+        arc_type: "{{ extensions.azure_key_vault.type }}"
+        arc_publisher: "{{ extensions.azure_key_vault.publisher }}"
       when: extension == "azure_key_vault"
 
     - name: Enable Hybrid Worker on Linux
@@ -34,9 +34,9 @@
         name: arc
         tasks_from: enable_arc_extension
       vars:
-        name: "{{ extensions.azure_hybrid_runbook.name }}"
-        type: "{{ extensions.azure_hybrid_runbook.type }}"
-        publisher: "{{ extensions.azure_hybrid_runbook.publisher }}"
+        arc_name: "{{ extensions.azure_hybrid_runbook.name }}"
+        arc_type: "{{ extensions.azure_hybrid_runbook.type }}"
+        arc_publisher: "{{ extensions.azure_hybrid_runbook.publisher }}"
       when: extension == "azure_hybrid_runbook"
 
     - name: Enable Azure Monitor on Linux
@@ -44,9 +44,9 @@
         name: arc
         tasks_from: enable_arc_extension
       vars:
-        name: "{{ extensions.azure_monitor_agent.name }}"
-        type: "{{ extensions.azure_monitor_agent.type }}"
-        publisher: "{{ extensions.azure_monitor_agent.publisher }}"
+        arc_name: "{{ extensions.azure_monitor_agent.name }}"
+        arc_type: "{{ extensions.azure_monitor_agent.type }}"
+        arc_publisher: "{{ extensions.azure_monitor_agent.publisher }}"
       when: extension == "azure_monitor_agent"
 
     - name: Enable Azure Monitor for VMs Linux
@@ -54,9 +54,9 @@
         name: arc
         tasks_from: enable_arc_extension
       vars:
-        name: "{{ extensions.azure_monitor_for_vms.name }}"
-        type: "{{ extensions.azure_monitor_for_vms.type }}"
-        publisher: "{{ extensions.azure_monitor_for_vms.publisher }}"
+        arc_name: "{{ extensions.azure_monitor_for_vms.name }}"
+        arc_type: "{{ extensions.azure_monitor_for_vms.type }}"
+        arc_publisher: "{{ extensions.azure_monitor_for_vms.publisher }}"
       when: extension == "azure_monitor_for_vms"
 
     - name: Enable AD SSH Login on Linux
@@ -64,9 +64,9 @@
         name: arc
         tasks_from: enable_arc_extension
       vars:
-        name: "{{ extensions.ad_ssh_login.name }}"
-        type: "{{ extensions.ad_ssh_login.type }}"
-        publisher: "{{ extensions.ad_ssh_login.publisher }}"
+        arc_name: "{{ extensions.ad_ssh_login.name }}"
+        arc_type: "{{ extensions.ad_ssh_login.type }}"
+        arc_publisher: "{{ extensions.ad_ssh_login.publisher }}"
       when: extension == "ad_ssh_login"
 
     - name: Enable Custom Scripts on Linux
@@ -74,9 +74,9 @@
         name: arc
         tasks_from: enable_arc_extension
       vars:
-        name: "{{ extensions.custom_script.name }}"
-        type: "{{ extensions.custom_script.type }}"
-        publisher: "{{ extensions.custom_script.publisher }}"
+        arc_name: "{{ extensions.custom_script.name }}"
+        arc_type: "{{ extensions.custom_script.type }}"
+        arc_publisher: "{{ extensions.custom_script.publisher }}"
       when: extension == "custom_script"
 
     - name: Enable Azure Log Analytics on Linux
@@ -84,9 +84,9 @@
         name: arc
         tasks_from: enable_arc_extension
       vars:
-        name: "{{ extensions.log_analytics_agent.name }}"
-        type: "{{ extensions.log_analytics_agent.type }}"
-        publisher: "{{ extensions.log_analytics_agent.publisher }}"
+        arc_name: "{{ extensions.log_analytics_agent.name }}"
+        arc_type: "{{ extensions.log_analytics_agent.type }}"
+        arc_publisher: "{{ extensions.log_analytics_agent.publisher }}"
       when: extension == "log_analytics_agent"
 
     - name: Enable Microsoft Defender on Linux
@@ -94,7 +94,7 @@
         name: arc
         tasks_from: enable_arc_extension
       vars:
-        name: "{{ extensions.microsoft_defender.name }}"
-        type: "{{ extensions.microsoft_defender.type }}"
-        publisher: "{{ extensions.microsoft_defender.publisher }}"
+        arc_name: "{{ extensions.microsoft_defender.name }}"
+        arc_type: "{{ extensions.microsoft_defender.type }}"
+        arc_publisher: "{{ extensions.microsoft_defender.publisher }}"
       when: extension == "microsoft_defender"

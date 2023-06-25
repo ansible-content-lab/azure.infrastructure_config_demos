@@ -24,7 +24,7 @@
         disable_bgp_route_propagation: true
         tags:
           deployment: ansible
-      register: route_table
+      register: transit_peered_networks_route_table
 
     - name: Create Hub VNET
       azure.azcollection.azure_rm_virtualnetwork:
@@ -36,7 +36,7 @@
         tags:
           deployment: ansible
           network-role: hub
-      register: hub_vnet
+      register: transit_peered_networks_hub_vnet
 
     - name: Sleep for 5 seconds so that Azure recognizes the VNET before subnet creation
       ansible.builtin.wait_for:
@@ -47,10 +47,10 @@
       azure.azcollection.azure_rm_subnet:
         resource_group: "{{ resource_group }}"
         name: "{{ hub_subnet_name }}"
-        virtual_network_name: "{{ hub_vnet.state.name }}"
+        virtual_network_name: "{{ transit_peered_networks_hub_vnet.state.name }}"
         address_prefix_cidr: "{{ hub_subnet_cidr }}"
         state: present
-      register: hub_subnet
+      register: transit_peered_hub_subnet
 
     - name: Create public ip for virtual gateway for VPN connections
       azure.azcollection.azure_rm_publicipaddress:
@@ -59,22 +59,22 @@
         allocation_method: dynamic # dynamic required for vgw
         tags:
           deployment: ansible
-      register: hub_gw_public_ip
+      register: transit_peered_networks_hub_gw_public_ip
 
     - name: Set Stat for Ansible Controller
       ansible.builtin.set_stats:
         data:
-          hub_gw_public_ip: "{{ hub_gw_public_ip.state.ip_address }}"
+          hub_gw_public_ip: "{{ transit_peered_networks_hub_gw_public_ip.state.ip_address }}"
         per_host: false
 
     - name: Create Hub Subnet
       azure.azcollection.azure_rm_subnet:
         resource_group: "{{ resource_group }}"
         name: GatewaySubnet
-        virtual_network_name: "{{ hub_vnet.state.name }}"
+        virtual_network_name: "{{ transit_peered_networks_hub_vnet.state.name }}"
         address_prefix_cidr: "{{ virtual_gw_subnet_cidr }}"
         state: present
-      register: gw_subnet
+      register: transit_peered_networks_gw_subnet
 
     - name: Notify wait time
       ansible.builtin.debug:
@@ -88,14 +88,14 @@
         ip_configurations:
           - name: "{{ virtual_gw_name }}-ip"
             private_ip_allocation_method: Dynamic
-            public_ip_address_name: "{{ hub_gw_public_ip.state.name }}"
-            subnet: "{{ gw_subnet.state.name }}"
+            public_ip_address_name: "{{ transit_peered_networks_hub_gw_public_ip.state.name }}"
+            subnet: "{{ transit_peered_networks_gw_subnet.state.name }}"
         sku: "{{ virtual_gw_sku }}"
-        virtual_network: "{{ hub_vnet.state.name }}"
+        virtual_network: "{{ transit_peered_networks_hub_vnet.state.name }}"
         vpn_type: "{{ virtual_gw_vpn_type }}" # noqa args[module]
         tags:
           deployment: ansible
-      register: hub_gw
+      register: transit_peered_networks_hub_gw
 
     - name: Create Spoke1 VNET
       azure.azcollection.azure_rm_virtualnetwork:
@@ -107,7 +107,7 @@
         tags:
           deployment: ansible
           network-role: spoke
-      register: spoke1_vnet
+      register: transit_peered_networks_spoke1_vnet
 
     - name: Sleep for 5 seconds so that Azure recognizes the VNET before subnet creation
       ansible.builtin.wait_for:
@@ -118,11 +118,11 @@
       azure.azcollection.azure_rm_subnet:
         resource_group: "{{ resource_group }}"
         name: "{{ spoke1_subnet_name }}"
-        virtual_network_name: "{{ spoke1_vnet.state.name }}"
+        virtual_network_name: "{{ transit_peered_networks_spoke1_vnet.state.name }}"
         address_prefix_cidr: "{{ spoke1_subnet_cidr }}"
         route_table: "{{ route_table_name }}"
         state: present
-      register: spoke1_subnet
+      register: transit_peered_networks_spoke1_subnet
 
     - name: Create Spoke2 VNET
       azure.azcollection.azure_rm_virtualnetwork:
@@ -134,7 +134,7 @@
         tags:
           deployment: ansible
           network-role: spoke
-      register: spoke2_vnet
+      register: transit_peered_networks_spoke2_vnet
 
     - name: Sleep for 5 seconds so that Azure recognizes the VNET before subnet creation
       ansible.builtin.wait_for:
@@ -145,11 +145,11 @@
       azure.azcollection.azure_rm_subnet:
         resource_group: "{{ resource_group }}"
         name: "{{ spoke2_subnet_name }}"
-        virtual_network_name: "{{ spoke2_vnet.state.name }}"
+        virtual_network_name: "{{ transit_peered_networks_spoke2_vnet.state.name }}"
         address_prefix_cidr: "{{ spoke2_subnet_cidr }}"
         route_table: "{{ route_table_name }}"
         state: present
-      register: spoke2_subnet
+      register: transit_peered_networks_spoke2_subnet
 
     - name: Peer hub to spoke 1
       azure.azcollection.azure_rm_virtualnetworkpeering:
@@ -254,16 +254,16 @@
         security_group: "{{ ssh_security_group_name }}"
         tags:
           deployment: ansible
-      register: hub_vnic
+      register: transit_peered_networks_hub_vnic
 
     - name: Dump IP for VM which will be created
       ansible.builtin.debug:
-        msg: "Hub VM IP Address: {{ hub_vnic.state.ip_configuration.private_ip_address }}"
+        msg: "Hub VM IP Address: {{ transit_peered_networks_hub_vnic.state.ip_configuration.private_ip_address }}"
 
     - name: Set Stat for Ansible Controller
       ansible.builtin.set_stats:
         data:
-          azure_hub_vm_private_ip: "{{ hub_vnic.state.ip_configuration.private_ip_address }}"
+          azure_hub_vm_private_ip: "{{ transit_peered_networks_hub_vnic.state.ip_configuration.private_ip_address }}"
         per_host: false
 
     - name: Create hub VM
@@ -277,7 +277,7 @@
         ssh_public_keys:
           - path: "/home/{{ vm_username }}/.ssh/authorized_keys"
             key_data: "{{ ansible_ssh_pub_key }}"
-        network_interfaces: "{{ hub_vnic.state.name }}"
+        network_interfaces: "{{ transit_peered_networks_hub_vnic.state.name }}"
         image:
           offer: RHEL
           publisher: RedHat
@@ -301,16 +301,16 @@
         subnet: "{{ spoke1_subnet_name }}"
         tags:
           deployment: ansible
-      register: spoke1_vnic
+      register: transit_peered_networks_spoke1_vnic
 
     - name: Dump IP for VM which will be created
       ansible.builtin.debug:
-        msg: "Spoke 1 VM IP Address: {{ spoke1_vnic.state.ip_configuration.private_ip_address }}"
+        msg: "Spoke 1 VM IP Address: {{ transit_peered_networks_spoke1_vnic.state.ip_configuration.private_ip_address }}"
 
     - name: Set Stat for Ansible Controller
       ansible.builtin.set_stats:
         data:
-          azure_spoke1_vm_private_ip: "{{ spoke1_vnic.state.ip_configuration.private_ip_address }}"
+          azure_spoke1_vm_private_ip: "{{ transit_peered_networks_spoke1_vnic.state.ip_configuration.private_ip_address }}"
         per_host: false
 
     - name: Create spoke 1 VM
@@ -324,7 +324,7 @@
         ssh_public_keys:
           - path: "/home/{{ vm_username }}/.ssh/authorized_keys"
             key_data: "{{ ansible_ssh_pub_key }}"
-        network_interfaces: "{{ spoke1_vnic.state.name }}"
+        network_interfaces: "{{ transit_peered_networks_spoke1_vnic.state.name }}"
         image:
           offer: RHEL
           publisher: RedHat
@@ -347,32 +347,32 @@
         name: dmz-vm-public-ip
         tags:
           deployment: ansible
-      register: dmz_vm_public_ip
+      register: transit_peered_networks_dmz_vm_public_ip
 
     - name: Dump public IP for VM which will be created
       ansible.builtin.debug:
-        msg: "DMZ VM IP address: {{ dmz_vm_public_ip.state.ip_address }}"
+        msg: "DMZ VM IP address: {{ transit_peered_networks_dmz_vm_public_ip.state.ip_address }}"
 
     - name: Create spoke 2 VM virtual network interface card
       azure.azcollection.azure_rm_networkinterface:
         resource_group: "{{ resource_group }}"
         name: spoke-2-vm-nic
-        public_ip_name: "{{ dmz_vm_public_ip.state.name }}"
+        public_ip_name: "{{ transit_peered_networks_dmz_vm_public_ip.state.name }}"
         virtual_network: "{{ spoke2_vnet_name }}"
         subnet: "{{ spoke2_subnet_name }}"
         tags:
           deployment: ansible
-      register: spoke2_vnic
+      register: transit_peered_networks_spoke2_vnic
 
     - name: Dump Private IP for VM which will be created
       ansible.builtin.debug:
-        msg: "Spoke 2 VM IP Address: {{ spoke2_vnic.state.ip_configuration.private_ip_address }}"
+        msg: "Spoke 2 VM IP Address: {{ transit_peered_networks_spoke2_vnic.state.ip_configuration.private_ip_address }}"
 
     - name: Set Stat for Ansible Controller
       ansible.builtin.set_stats:
         data:
-          azure_dmz_vm_public_ip: "{{ dmz_vm_public_ip.state.ip_address }}"
-          azure_dmz_vm_private_ip: "{{ spoke2_vnic.state.ip_configuration.private_ip_address }}"
+          azure_dmz_vm_public_ip: "{{ transit_peered_networks_dmz_vm_public_ip.state.ip_address }}"
+          azure_dmz_vm_private_ip: "{{ transit_peered_networks_spoke2_vnic.state.ip_configuration.private_ip_address }}"
         per_host: false
 
     - name: Create spoke 2 VM
@@ -386,7 +386,7 @@
         ssh_public_keys:
           - path: "/home/{{ vm_username }}/.ssh/authorized_keys"
             key_data: "{{ ansible_ssh_pub_key }}"
-        network_interfaces: "{{ spoke2_vnic.state.name }}"
+        network_interfaces: "{{ transit_peered_networks_spoke2_vnic.state.name }}"
         image:
           offer: RHEL
           publisher: RedHat
@@ -399,7 +399,7 @@
 
     - name: Add public IP to host group
       ansible.builtin.add_host:
-        name: "{{ dmz_vm_public_ip.state.ip_address }}"
+        name: "{{ transit_peered_networks_dmz_vm_public_ip.state.ip_address }}"
         groups: DMZ
         ansible_ssh_user: "{{ vm_username }}"
         ansible_ssh_private_key_file: "{{ dmz_ansible_ssh_private_key_file }}"

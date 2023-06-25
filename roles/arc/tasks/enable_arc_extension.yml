@@ -3,20 +3,20 @@
   ansible.builtin.shell: |
     az connectedmachine extension create \
     --machine-name "{{ item }}" \
-    --name "{{ name }}" \
+    --name "{{ arc_name }}" \
     --location "{{ region }}" \
     --resource-group "{{ resource_group }}" \
-    --type "{{ type }}" \
-    --publisher "{{ publisher }}" \
+    --type "{{ arc_type }}" \
+    --publisher "{{ arc_publisher }}" \
     --enable-auto-upgrade true \
     --auto-upgrade-minor true \
     --no-wait
   loop: "{{ arc_hosts }}"
-  register: results
-  changed_when: results.rc != 0
-  failed_when: ("ERROR" in results.stderr)
+  register: arc_results
+  changed_when: arc_results.rc != 0
+  failed_when: ("ERROR" in arc_results.stderr)
 
 - name: Register Enablement
   ansible.builtin.set_stats:
     data:
-      arc_enablement_results: results
+      arc_enablement_results: arc_results

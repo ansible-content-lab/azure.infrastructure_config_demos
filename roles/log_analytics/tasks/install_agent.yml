@@ -11,31 +11,31 @@
     path: /opt/microsoft/omsagent
     get_attributes: false
     get_checksum: false
-  register: log_agent_exists
+  register: log_analytics_log_agent_exists
 
 - name: Ensure wget is installed
   ansible.builtin.dnf:
     name: wget
     state: present
-  when: not log_agent_exists.stat.exists
+  when: not log_analytics_log_agent_exists.stat.exists
 
 - name: Ensure GDB is installed
   ansible.builtin.dnf:
     name: gdb
     state: present
-  when: not log_agent_exists.stat.exists
+  when: not log_analytics_log_agent_exists.stat.exists
 
 - name: Download Agent on Linux Machines
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/Microsoft/OMS-Agent-for-Linux/master/installer/scripts/onboard_agent.sh
     dest: /tmp/onboard_agent.sh
     mode: '0755'
-  when: not log_agent_exists.stat.exists
+  when: not log_analytics_log_agent_exists.stat.exists
 
 - name: Install Agent on Linux Machines
   ansible.builtin.command: "sh /tmp/onboard_agent.sh -w {{ analytics_workspace.customer_id }} -s {{ analytics_workspace.shared_keys.primary_shared_key }}"
   when: not log_agent_exists.stat.exists
-  register: install_result
+  register: log_analytics_install_result
   failed_when:
-    - install_result.rc == 1 # This script has a bug regarding OpenSSL versions and so we only fail when response code is 1
-  changed_when: install_result.rc != 1
+    - log_analytics_install_result.rc == 1 # This script has a bug regarding OpenSSL versions and so we only fail when response code is 1
+  changed_when: log_analytics_install_result.rc != 1

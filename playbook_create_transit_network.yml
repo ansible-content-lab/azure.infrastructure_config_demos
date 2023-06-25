@@ -16,7 +16,7 @@
       ansible.builtin.import_role:
         name: transit_peered_networks
       vars:
-        operation: create
+        transit_peered_networks_operation: create
 
 - name: Configure VM instances created in the DMZ for SSH access to private hosts
   hosts: DMZ

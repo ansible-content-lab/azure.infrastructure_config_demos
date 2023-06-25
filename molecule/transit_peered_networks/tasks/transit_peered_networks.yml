@@ -28,7 +28,7 @@
       ansible.builtin.import_role:
         name: azure.infrastructure_config_demos.transit_peered_networks
       vars:
-        operation: create
+        transit_peered_networks_operation: create
 
     - name: Check VNETs
       azure.azcollection.azure_rm_virtualnetwork_info:
@@ -45,4 +45,4 @@
       ansible.builtin.import_role:
         name: azure.infrastructure_config_demos.transit_peered_networks
       vars:
-        operation: delete
+        transit_peered_networks_operation: delete

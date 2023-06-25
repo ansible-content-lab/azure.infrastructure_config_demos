@@ -4,42 +4,42 @@
     path: /usr/bin/azcmagent
     get_attributes: false
     get_checksum: false
-  register: azcmagent_lnx_downloaded
+  register: arc_azcmagent_lnx_downloaded
   when: ansible_system == 'Linux'
 
 - name: Check if the Connected Machine Agent has already been downloaded on Windows servers
   ansible.windows.win_stat:
     path: C:\Program Files\AzureConnectedMachineAgent
-  register: azcmagent_win_downloaded
+  register: arc_azcmagent_win_downloaded
   when: ansible_os_family == 'Windows'
 
 - name: Check if the Connected Machine Agent has already been connected
   become: true
   ansible.builtin.command:
-    cmd: azcmagent check
-  register: azcmagent_lnx_connected
+    cmd: arc_azcmagent check
+  register: arc_azcmagent_lnx_connected
   ignore_errors: true
   when: ansible_system == 'Linux'
-  failed_when: (azcmagent_lnx_connected.rc not in [0, 16])
+  failed_when: (arc_azcmagent_lnx_connected.rc not in [0, 16])
   changed_when: false
 
 - name: Check if the Connected Machine Agent has already been connected on Windows
   ansible.windows.win_command: azcmagent check
-  register: azcmagent_win_connected
+  register: arc_azcmagent_win_connected
   when: ansible_os_family == 'Windows'
   ignore_errors: true
-  failed_when: (azcmagent_win_connected.rc not in [0, 16])
+  failed_when: (arc_azcmagent_win_connected.rc not in [0, 16])
   changed_when: false
 
 - name: Disconnect the Connected Machine Agent on Linux servers to Azure Arc
   become: true
   ansible.builtin.command: azcmagent disconnect --service-principal-id "{{ service_principal_id }}" --service-principal-secret "{{ service_principal_secret }}" --resource-group "{{ resource_group }}" --tenant-id "{{ tenant_id }}" --location "{{ region }}" --subscription-id "{{ subscription_id }}"
-  register: azcmagent_lnx_disconnected
-  when: (ansible_system == 'Linux') and (azcmagent_lnx_connected.rc is defined and azcmagent_lnx_connected.rc != 0)
-  failed_when: (azcmagent_lnx_disconnected.rc not in [0, 16])
-  changed_when: (azcmagent_lnx_disconnected.rc in [0, 16])
+  register: arc_azcmagent_lnx_disconnected
+  when: (ansible_system == 'Linux') and (arc_azcmagent_lnx_connected.rc is defined and arc_azcmagent_lnx_connected.rc != 0)
+  failed_when: (arc_azcmagent_lnx_disconnected.rc not in [0, 16])
+  changed_when: (arc_azcmagent_lnx_disconnected.rc in [0, 16])
 
 - name: Connect the Connected Machine Agent on Windows servers to Azure
   ansible.windows.win_shell: '& $env:ProgramFiles\AzureConnectedMachineAgent\azcmagent.exe disconnect --service-principal-id "{{ service_principal_id }}" --service-principal-secret "{{ service_principal_secret }}" --resource-group "{{ resource_group }}" --tenant-id "{{ tenant_id }}" --location "{{ region }}" --subscription-id "{{ subscription_id }}"'
-  when: (ansible_os_family == 'Windows') and (azcmagent_win_connected.rc is defined and azcmagent_win_connected.rc != 0)
+  when: (ansible_os_family == 'Windows') and (arc_azcmagent_win_connected.rc is defined and arc_azcmagent_win_connected.rc != 0)
   changed_when: false

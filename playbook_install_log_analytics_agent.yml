@@ -9,5 +9,5 @@
         name: log_analytics
         tasks_from: install_agent
       vars:
-        analytics_workspace: "{{ workspace_name }}"
+        log_analytics_workspace: "{{ workspace_name }}"
       when: ansible_system == 'Linux'

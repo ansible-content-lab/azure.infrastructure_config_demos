@@ -32,9 +32,9 @@
         tasks_from: enable_arc_extension
       vars:
         arc_hosts: "{{ linux_hosts }}"
-        name: "{{ extensions.azure_monitor_agent.name }}"
-        type: "{{ extensions.azure_monitor_agent.type }}"
-        publisher: "{{ extensions.azure_monitor_agent.publisher }}"
+        arc_name: "{{ extensions.azure_monitor_agent.name }}"
+        arc_type: "{{ extensions.azure_monitor_agent.type }}"
+        arc_publisher: "{{ extensions.azure_monitor_agent.publisher }}"
 
     - name: Disable Arc Log Analytics Extension on Linux Hosts
       ansible.builtin.import_role:
@@ -42,6 +42,6 @@
         tasks_from: disable_arc_extension
       vars:
         arc_hosts: "{{ linux_hosts }}"
-        extension: "{{ extensions.log_analytics_agent.name }}"
+        arc_name: "{{ extensions.log_analytics_agent.name }}"
 
     # TODO: Add for Windows Hosts

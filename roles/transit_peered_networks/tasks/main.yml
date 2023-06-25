@@ -2,7 +2,7 @@
 - name: Check operation validation
   ansible.builtin.fail:
     msg: "Please provide operation as 'create' or 'delete'"
-  when: operation not in ['create', 'delete']
+  when: transit_peered_networks_operation not in ['create', 'delete']
 
 - name: Include operation tasks
-  ansible.builtin.include_tasks: "{{ operation }}.yml"
+  ansible.builtin.include_tasks: "{{ transit_peered_networks_operation }}.yml"
