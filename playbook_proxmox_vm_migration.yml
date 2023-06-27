@@ -1,6 +1,7 @@
 ---
 - name: Verify required parameters prior to running automation
   hosts: localhost
+  connection: local
   gather_facts: false
   become: false
   tasks:
@@ -18,6 +19,7 @@
 
 - name: Prep Proxmox for VM image clone
   hosts: localhost
+  connection: local
   gather_facts: false
   become: false
   tasks:
@@ -26,12 +28,34 @@
         name: proxmox_vm_migration
         tasks_from: stop_vm
 
-# - name: Create VM image
-#   hosts: proxmox_host
-#   gather_facts: false
-#   become: true
-#   tasks:
-#     - name: Create Azure compatible VM image
-#       ansible.builtin.import_role:
-#         name: proxmox_vm_migration
-#         tasks_from: convert_image
+- name: Create VM image
+  hosts: proxmox
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Create Azure compatible VM image
+      ansible.builtin.import_role:
+        name: proxmox_vm_migration
+        tasks_from: convert_image
+
+- name: Start VM
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Start VM
+      when: proxmox_vm_migration_restart_vm
+      ansible.builtin.import_role:
+        name: proxmox_vm_migration
+        tasks_from: stop_vm
+
+- name: Cleanup Proxmox
+  hosts: proxmox
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Run cleanup task
+      ansible.builtin.import_role:
+        name: proxmox_vm_migration
+        tasks_from: cleanup

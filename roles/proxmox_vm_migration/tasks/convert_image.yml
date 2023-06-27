@@ -1,21 +1,7 @@
 ---
-- name: Create copy of original disk image
-  when: not proxmox_vm_migration_overwrite_original_image
-  block:
-    - name: Copy file with owner and permissions
-      ansible.builtin.copy:
-        src: "{{ proxmox_vm_migration_image_src }}"
-        dest: "{{ proxmox_vm_migration_image_copy_dest }}"
-        owner: root # Proxmox defaults to root
-        group: root # Proxmox defaults to root
-        mode: '0644'
-      notify: Start VM
-
-    - name: Set copy as image source
-      ansible.builtin.set_fact:
-        proxmox_vm_migration_image_src: "{{ proxmox_vm_migration_image_copy_dest }}"
-
 - name: Convert disk image to Azure compatible format
   ansible.builtin.command:
     cmd: "qemu-img convert -f {{ proxmox_vm_migration_source_format }} -O vpc {{ proxmox_vm_migration_image_src }} {{ proxmox_vm_migration_image_dest }}"
-  changed_when: false
+  register: proxmox_vm_migration_conversion
+  changed_when: proxmox_vm_migration_conversion.rc == 0
+  failed_when: proxmox_vm_migration_conversion.rc != 0
