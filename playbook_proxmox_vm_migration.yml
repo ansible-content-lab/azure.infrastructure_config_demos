@@ -1,0 +1,37 @@
+---
+- name: Verify required parameters prior to running automation
+  hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Fail if variables not defined
+      ansible.builtin.assert:
+        that:
+          - proxmox_vm_migration_image_src is defined
+          - proxmox_vm_migration_image_dest is defined
+          - proxmox_api_user
+          - proxmox_api_token
+          - proxmox_api_secret
+          - proxmox_api_host
+          - proxmox_vm_id
+        fail_msg: "Required variables not set"
+
+- name: Prep Proxmox for VM image clone
+  hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Shutdown VM
+      ansible.builtin.import_role:
+        name: proxmox_vm_migration
+        tasks_from: stop_vm
+
+# - name: Create VM image
+#   hosts: proxmox_host
+#   gather_facts: false
+#   become: true
+#   tasks:
+#     - name: Create Azure compatible VM image
+#       ansible.builtin.import_role:
+#         name: proxmox_vm_migration
+#         tasks_from: convert_image

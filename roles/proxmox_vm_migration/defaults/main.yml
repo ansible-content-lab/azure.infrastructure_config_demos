@@ -1,0 +1,4 @@
+---
+proxmox_vm_migration_delete_image_after_migration: true
+proxmox_vm_migration_overwrite_original_image: false
+proxmox_vm_migration_restart_vm: true
