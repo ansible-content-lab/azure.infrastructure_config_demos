@@ -1,0 +1,7 @@
+---
+- name: Copy the Azure VM image from Proxmox to AAP
+  ansible.builtin.fetch:
+    src: "{{ proxmox_vm_migration_image_dest }}"
+    dest: "{{ proxmox_vm_migration_local_image_path }}"
+    flat: true
+  register: proxmox_vm_migration_copy_vm_file_results
