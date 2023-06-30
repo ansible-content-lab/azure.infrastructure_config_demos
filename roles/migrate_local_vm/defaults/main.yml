@@ -1,2 +1,2 @@
 ---
-# defaults file for migrate_local_vm
+migrate_local_vm_local_image_path: /tmp/

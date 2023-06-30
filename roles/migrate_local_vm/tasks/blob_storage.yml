@@ -1,0 +1,15 @@
+---
+- name: Warn user of time
+  ansible.builtin.debug:
+    msg: "This process may take a very long time."
+
+- name: Push local VM image to Azure blob storage
+  azure.azcollection.azure_rm_storageblob:
+    resource_group: "{{ migrate_local_vm_resource_group }}"
+    storage_account_name: "{{ migrate_local_vm_storage_account }}"
+    container: "{{ migrate_local_vm_storage_container }}"
+    blob: "{{ file_name }}"
+    blob_type: page
+    src: "{{ migrate_local_vm_local_image_path }}{{ file_name }}"
+    content_type: "application/octet-stream"
+  register: migrate_local_vm_blob_storage_results

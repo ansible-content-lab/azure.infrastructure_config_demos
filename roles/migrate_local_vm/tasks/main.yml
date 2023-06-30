@@ -1,2 +1,17 @@
 ---
-# tasks file for migrate_local_vm
+- name: Fail if variables not defined
+  ansible.builtin.assert:
+    that:
+      - migrate_local_vm_resource_group is defined
+      - migrate_local_vm_storage_account is defined
+      - migrate_local_vm_storage_container is defined
+      - migrate_local_vm_image_name is defined
+    fail_msg: "Required variables not set"
+
+- name: Run blob storage tasks
+  ansible.builtin.import_tasks:
+    file: blob_storage.yml
+
+- name: Run image tasks
+  ansible.builtin.import_tasks:
+    file: vm_image.yml

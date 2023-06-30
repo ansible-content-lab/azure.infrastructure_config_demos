@@ -1,0 +1,8 @@
+---
+- name: Create an image from os disk
+  azure.azcollection.azure_rm_image:
+    resource_group: "{{ migrate_local_vm_resource_group }}"
+    name: "{{ migrate_local_vm_image_name }}"
+    source: "https://{{ migrate_local_vm_storage_account }}.blob.core.windows.net/vmimages/{{ file_name }}"
+    os_type: Linux
+    hyper_v_generation: V2

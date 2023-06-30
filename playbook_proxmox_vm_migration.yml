@@ -9,6 +9,8 @@
       ansible.builtin.import_role:
         name: proxmox_vm_conversion
         tasks_from: local_vm_image_check
+  tags:
+    - proxmox
 
 - name: Convert Proxmox VM to Azure format and move locally in preparation for migration to Azure
   hosts: proxmox
@@ -20,3 +22,19 @@
             proxmox_vm_migration_run_if_local_image_exists
       ansible.builtin.import_role:
         name: proxmox_vm_conversion
+  tags:
+    - proxmox
+
+- name: Upload VM image to Azure and deploy it as a new VM
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  vars:
+    file_name: "{{ hostvars['localhost'].proxmox_vm_migration_image_filename }}"
+  tasks:
+    - name: Run migrate local vm role
+      ansible.builtin.import_role:
+        name: migrate_local_vm
+  tags:
+    - azure
