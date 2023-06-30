@@ -1,9 +1,9 @@
 ---
 - name: Check to see if the destination file path already exists
-  delegate_to: localhost
-  connection: local
   ansible.builtin.stat:
     path: "{{ proxmox_vm_migration_local_image_path }}{{ proxmox_vm_migration_image_filename }}"
+    get_checksum: false
+    get_attributes: false
   register: proxmox_vm_migration_local_image_exists
 
 - name: Output machine image state

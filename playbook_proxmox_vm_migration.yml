@@ -1,9 +1,22 @@
 ---
-- name: Migrate Proxmox VM to Azure VM
+- name: Check local file system to see if converted image already exists
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Check if the converted image file already exists locally
+      ansible.builtin.import_role:
+        name: proxmox_vm_conversion
+        tasks_from: local_vm_image_check
+
+- name: Convert Proxmox VM to Azure format and move locally in preparation for migration to Azure
   hosts: proxmox
   gather_facts: false
   become: false
   tasks:
-    - name: Run local cleanup task
+    - name: Convert Proxmox VM image and move to localhost
+      when: not hostvars['localhost'].proxmox_vm_migration_local_image_exists.stat.exists or
+            proxmox_vm_migration_run_if_local_image_exists
       ansible.builtin.import_role:
-        name: proxmox_vm_migration
+        name: proxmox_vm_conversion

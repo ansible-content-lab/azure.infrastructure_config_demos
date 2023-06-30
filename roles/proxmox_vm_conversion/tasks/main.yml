@@ -12,19 +12,6 @@
       - proxmox_api_host is defined
     fail_msg: "Required variables not set"
 
-- name: Check if the converted image file already exists locally
-  delegate_to: localhost
-  connection: local
-  ansible.builtin.import_tasks:
-    file: local_vm_image_check.yml
-
-- name: Assert that conditions exist to continue
-  ansible.builtin.assert:
-    that:
-      - not proxmox_vm_migration_local_image_exists.stat.exists or
-        (proxmox_vm_migration_run_if_local_image_exists and proxmox_vm_migration_local_image_exists.stat.exists)
-    fail_msg: "A local copy of the image exists and proxmox_vm_migration_run_if_local_image_exists is false"
-
 - name: Shutdown VM
   delegate_to: localhost
   connection: local
