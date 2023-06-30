@@ -1,0 +1,58 @@
+- name: Fail if variables not defined
+  ansible.builtin.assert:
+    that:
+      - proxmox_vm_migration_source_format is defined
+      - proxmox_vm_migration_image_src is defined
+      - proxmox_vm_migration_image_dest is defined
+      - proxmox_vm_migration_image_filename is defined
+      - proxmox_vm_id is defined
+      - proxmox_api_user is defined
+      - proxmox_api_token is defined
+      - proxmox_api_secret is defined
+      - proxmox_api_host is defined
+    fail_msg: "Required variables not set"
+
+- name: Check if the converted image file already exists locally
+  delegate_to: localhost
+  connection: local
+  ansible.builtin.import_tasks:
+    file: local_vm_image_check.yml
+
+- name: Assert that conditions exist to continue
+  ansible.builtin.assert:
+    that:
+      - not proxmox_vm_migration_local_image_exists.stat.exists or
+        (proxmox_vm_migration_run_if_local_image_exists and proxmox_vm_migration_local_image_exists.stat.exists)
+    fail_msg: "A local copy of the image exists and proxmox_vm_migration_run_if_local_image_exists is false"
+
+- name: Shutdown VM
+  delegate_to: localhost
+  connection: local
+  ansible.builtin.import_tasks:
+    file: stop_proxmox_vm.yml
+
+- name: Create Azure compatible VM image
+  ansible.builtin.import_tasks:
+    file: convert_image.yml
+
+- name: Start VM
+  delegate_to: localhost
+  connection: local
+  ansible.builtin.import_tasks:
+    file: start_proxmox_vm.yml
+
+- name: Move VM image to automation host
+  ansible.builtin.import_tasks:
+    file: move_azure_image.yml
+
+- name: Run Proxmox cleanup task
+  when: proxmox_vm_migration_delete_copied_images_after_migration
+  ansible.builtin.import_tasks:
+    file: cleanup_proxmox.yml
+
+- name: Run local cleanup task
+  delegate_to: localhost
+  connection: local
+  when: proxmox_vm_migration_delete_copied_images_after_migration
+  ansible.builtin.import_tasks:
+    file: cleanup_local.yml

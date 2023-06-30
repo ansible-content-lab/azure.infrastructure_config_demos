@@ -1,4 +1,5 @@
 ---
+proxmox_vm_migration_run_if_local_image_exists: true
 proxmox_vm_migration_delete_copied_images_after_migration: true
 proxmox_vm_migration_start_proxmox_vm: true
 proxmox_vm_migration_local_image_path: /tmp/

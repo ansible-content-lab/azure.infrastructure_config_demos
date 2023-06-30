@@ -1,4 +1,8 @@
 ---
+- name: Notify the user that this next step will take a long time
+  ansible.builtin.debug:
+    msg: The next step can take a very long time depending on the size of the VM image.
+
 - name: Copy the Azure VM image from Proxmox to AAP
   ansible.builtin.fetch:
     src: "{{ proxmox_vm_migration_image_dest }}"
