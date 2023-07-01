@@ -6,6 +6,11 @@
       - migrate_local_vm_storage_account is defined
       - migrate_local_vm_storage_container is defined
       - migrate_local_vm_image_name is defined
+      - migrate_local_vm_name is defined
+      - migrate_local_vm_vnet_resource_group is defined
+      - migrate_local_vm_vnet_name is defined
+      - migrate_local_vm_subnet_name is defined
+      - migrate_local_vm_password is defined
     fail_msg: "Required variables not set"
 
 - name: Run blob storage tasks
@@ -15,3 +20,7 @@
 - name: Run image tasks
   ansible.builtin.import_tasks:
     file: vm_image.yml
+
+- name: Run vm tasks
+  ansible.builtin.import_tasks:
+    file: vm.yml

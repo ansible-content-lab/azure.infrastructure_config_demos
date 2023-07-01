@@ -1,2 +1,4 @@
 ---
 migrate_local_vm_local_image_path: /tmp/
+migrate_local_vm_size: Standard_B1s
+migrate_local_vm_username: azureuser

@@ -12,4 +12,6 @@
     blob_type: page
     src: "{{ migrate_local_vm_local_image_path }}{{ file_name }}"
     content_type: "application/octet-stream"
+    tags:
+      deployment: ansible
   register: migrate_local_vm_blob_storage_results

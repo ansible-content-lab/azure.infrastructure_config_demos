@@ -6,3 +6,5 @@
     source: "https://{{ migrate_local_vm_storage_account }}.blob.core.windows.net/vmimages/{{ file_name }}"
     os_type: Linux
     hyper_v_generation: V2
+    tags:
+      deployment: ansible
