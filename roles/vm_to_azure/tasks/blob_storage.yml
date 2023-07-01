@@ -8,9 +8,9 @@
     resource_group: "{{ vm_to_azure_resource_group }}"
     storage_account_name: "{{ vm_to_azure_storage_account }}"
     container: "{{ vm_to_azure_storage_container }}"
-    blob: "{{ file_name }}"
+    blob: "{{ vm_to_azure_file_name }}"
     blob_type: page
-    src: "{{ vm_to_azure_local_image_path }}{{ file_name }}"
+    src: "{{ vm_to_azure_local_image_path }}{{ vm_to_azure_file_name }}"
     content_type: "application/octet-stream"
     tags:
       deployment: ansible

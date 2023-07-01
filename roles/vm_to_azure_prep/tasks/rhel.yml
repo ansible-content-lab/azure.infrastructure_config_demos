@@ -110,25 +110,31 @@
     dest: /etc/udev/rules.d/
     mode: '0644'
 
-- name: Modify kernel boot parameters
+- name: Modify GRUB_TIMEOUT kernel boot parameters
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: 'GRUB_TIMEOUT'
+    line: 'GRUB_TIMEOUT=10'
+
+- name: Modify GRUB_CMDLINE_LINUX kernel boot parameters
   ansible.builtin.lineinfile:
     path: /etc/default/grub
     regexp: 'GRUB_CMDLINE_LINUX'
     line: 'GRUB_CMDLINE_LINUX="loglevel=3 crashkernel=auto console=tty1 console=ttyS0 earlyprintk=ttyS0 rootdelay=300"'
 
-- name: Modify kernel boot parameters
+- name: Modify GRUB_TIMEOUT_STYLE kernel boot parameters
   ansible.builtin.lineinfile:
     path: /etc/default/grub
     regexp: 'GRUB_TIMEOUT_STYLE'
     line: 'GRUB_TIMEOUT_STYLE=countdown'
 
-- name: Modify kernel boot parameters
+- name: Modify GRUB_TERMINAL kernel boot parameters
   ansible.builtin.lineinfile:
     path: /etc/default/grub
     regexp: 'GRUB_TERMINAL'
     line: 'GRUB_TERMINAL="serial console"'
 
-- name: Modify kernel boot parameters
+- name: Modify GRUB_SERIAL_COMMAND kernel boot parameters
   ansible.builtin.lineinfile:
     path: /etc/default/grub
     regexp: 'GRUB_SERIAL_COMMAND'
