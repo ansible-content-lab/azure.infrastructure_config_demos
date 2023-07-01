@@ -3,8 +3,8 @@
   azure.azcollection.azure_rm_image:
     resource_group: "{{ vm_to_azure_resource_group }}"
     name: "{{ vm_to_azure_image_name }}"
-    source: "https://{{ vm_to_azure_storage_account }}.blob.core.windows.net/vmimages/{{ file_name }}"
+    source: "https://{{ vm_to_azure_storage_account }}.blob.core.windows.net/vmimages/{{ vm_to_azure_file_name }}"
     os_type: Linux
-    hyper_v_generation: V2
+    hyper_v_generation: "{{ vm_to_azure_hyperv_generation }}"
     tags:
       deployment: ansible

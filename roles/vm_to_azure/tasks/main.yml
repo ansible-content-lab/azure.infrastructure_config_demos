@@ -2,6 +2,7 @@
 - name: Fail if variables not defined
   ansible.builtin.assert:
     that:
+      - vm_to_azure_file_name is defined
       - vm_to_azure_resource_group is defined
       - vm_to_azure_storage_account is defined
       - vm_to_azure_storage_container is defined

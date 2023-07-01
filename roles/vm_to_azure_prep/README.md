@@ -1,38 +1,27 @@
-Role Name
-=========
+# VM to Azure Prep Role
 
-A brief description of the role goes here.
+This Ansible role contains Ansible automation to prep local virtual machines (on-prem or not on Azure) with the packages and OS configuration necessary to export the virtual machine and then run it on Azure.
 
-Requirements
-------------
+This role is only responsible for the machine preparation.  It does not handle the work of actually moving the machine image to Azure.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Using the Role
 
-Role Variables
---------------
+This role is always intended to be called using `main.yml`.  This file will subsequently determine which operations to perform based on the OS family of the target virtual machine.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Currently, this role supports the following OS families:
 
-Dependencies
-------------
+* `RedHat`
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+### Variables
 
-Example Playbook
-----------------
+The following optional variables may be set to perform tasks that are not required, but recommended, before packaging a VM image for Azure.
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+#### Optional
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```yaml
+---
+vm_to_azure_prep_users:
+  - scott
+  - hicham
+  - matthew
+```

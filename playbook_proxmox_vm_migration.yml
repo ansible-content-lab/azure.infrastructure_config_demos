@@ -43,7 +43,7 @@
   gather_facts: false
   become: false
   vars:
-    file_name: "{{ hostvars['localhost'].proxmox_vm_migration_image_filename }}"
+    vm_to_azure_file_name: "{{ hostvars['localhost'].proxmox_vm_migration_image_filename }}"
   tasks:
     - name: Run migrate local vm role
       ansible.builtin.import_role:
