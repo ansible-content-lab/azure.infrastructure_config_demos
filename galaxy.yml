@@ -1,7 +1,7 @@
 ---
 namespace: azure
 name: infrastructure_config_demos
-version: 1.2.0
+version: 1.4.0
 readme: README.md
 authors:
   - Scott Harwell <sharwell@redhat.com>
@@ -13,7 +13,7 @@ tags:
   - "cloud"
   - "azure"
 dependencies:
-  azure.azcollection: ">=1.13.0"
+  azure.azcollection: ">=1.16.0"
 repository: https://github.com/ansible-content-lab/azure.infrastructure_config_demos.git
 documentation: https://github.com/ansible-content-lab/azure.infrastructure_config_demos.git
 homepage: https://github.com/ansible-content-lab/azure.infrastructure_config_demos.git

@@ -1,5 +1,17 @@
 ---
 - name: Check local file system to see if converted image already exists
+  hosts: vm
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Prepare the VM with OS requirements to run in Azure
+      ansible.builtin.import_role:
+        name: vm_to_azure_prep
+  tags:
+    - vm_prep
+    - proxmox
+
+- name: Check local file system to see if converted image already exists
   hosts: localhost
   connection: local
   gather_facts: false
@@ -35,6 +47,6 @@
   tasks:
     - name: Run migrate local vm role
       ansible.builtin.import_role:
-        name: migrate_local_vm
+        name: vm_to_azure
   tags:
     - azure

@@ -1,0 +1,4 @@
+---
+vm_to_azure_local_image_path: /tmp/
+vm_to_azure_size: Standard_B1s
+vm_to_azure_username: azureuser

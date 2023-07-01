@@ -1,0 +1,58 @@
+---
+- name: Create Network Security Group that allows SSH
+  azure.azcollection.azure_rm_securitygroup:
+    resource_group: "{{ vm_to_azure_resource_group }}"
+    name: linux-migration-sg
+    rules:
+      - name: SSH
+        protocol: Tcp
+        destination_port_range: 22
+        access: Allow
+        priority: 1001
+        direction: Inbound
+    tags:
+      deployment: ansible
+
+- name: Create public IP address
+  azure.azcollection.azure_rm_publicipaddress:
+    resource_group: "{{ vm_to_azure_resource_group }}"
+    allocation_method: Static
+    name: linux-migration-public-ip
+    tags:
+      deployment: ansible
+  register: vm_to_azure_public_ip
+
+- name: Create virtual network interface card
+  azure.azcollection.azure_rm_networkinterface:
+    resource_group: "{{ vm_to_azure_resource_group }}"
+    name: "{{ vm_to_azure_name }}-nic"
+    virtual_network:
+      name: "{{ vm_to_azure_vnet_name }}"
+      resource_group: "{{ vm_to_azure_vnet_resource_group }}"
+    subnet: "{{ vm_to_azure_subnet_name }}"
+    security_group: linux-migration-sg
+    ip_configurations:
+      - name: ip-configuration
+        primary: true
+        public_ip_address_name: "{{ vm_to_azure_public_ip.state.name }}"
+        private_ip_allocation_method: Dynamic
+    tags:
+      deployment: ansible
+  register: vm_to_azure_vnic
+
+- name: Create a VM
+  azure.azcollection.azure_rm_virtualmachine:
+    resource_group: "{{ vm_to_azure_resource_group }}"
+    name: "{{ vm_to_azure_name }}"
+    vm_size: "{{ vm_to_azure_size }}"
+    storage_account: "{{ vm_to_azure_storage_account }}"
+    admin_username: "{{ vm_to_azure_username }}"
+    admin_password: "{{ vm_to_azure_password }}"
+    virtual_network_name: "{{ vm_to_azure_vnet_name }}"
+    network_interfaces: "{{ vm_to_azure_vnic.state.id }}"
+    image:
+      name: "{{ vm_to_azure_image_name }}"
+      resource_group: "{{ vm_to_azure_resource_group }}"
+    tags:
+      deployment: ansible
+  register: migrate_local_vm
