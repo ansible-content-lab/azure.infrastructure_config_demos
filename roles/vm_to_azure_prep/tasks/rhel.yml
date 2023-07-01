@@ -10,10 +10,9 @@
 - name: Install required system packages
   ansible.builtin.dnf:
     name:
-      - ssh
-      - libvirt
+      - "libvirt"
       - "virt-install"
-      - libguestfs
+      - "libguestfs"
       - "libguestfs-tools"
     state: latest
 
@@ -111,11 +110,6 @@
     dest: /etc/udev/rules.d/
     mode: '0644'
 
-- name: Enable sshd
-  ansible.builtin.systemd:
-    name: sshd
-    enabled: true
-
 - name: Modify kernel boot parameters
   ansible.builtin.lineinfile:
     path: /etc/default/grub
@@ -153,24 +147,24 @@
       - WALinuxAgent
     state: latest
 
-- name: Enable sshd
+- name: Enable waagent
   ansible.builtin.systemd:
     name: waagent
     enabled: true
 
-- name: Modify waagent parameters
+- name: Modify waagent Provisioning.DeleteRootPassword parameters
   ansible.builtin.lineinfile:
     path: /etc/waagent.conf
     regexp: 'Provisioning\.DeleteRootPassword'
     line: 'Provisioning.DeleteRootPassword=y'
 
-- name: Modify waagent parameters
+- name: Modify waagent ResourceDisk.Format parameters
   ansible.builtin.lineinfile:
     path: /etc/waagent.conf
     regexp: 'ResourceDisk\.Format'
     line: 'ResourceDisk.Format=n'
 
-- name: Modify waagent parameters
+- name: Modify waagent ResourceDisk.EnableSwap parameters
   ansible.builtin.lineinfile:
     path: /etc/waagent.conf
     regexp: 'ResourceDisk\.EnableSwap'
@@ -191,7 +185,14 @@
     name: "{{ item }}"
     state: absent
     remove: true
-  loop: vm_to_azure_prep_users
+  loop: "{{ vm_to_azure_prep_users }}"
+
+- name: Generate SSH host keys
+  ansible.builtin.command:
+    cmd: "ssh-keygen -A"
+  register: vm_to_azure_prep_keygen
+  changed_when: vm_to_azure_prep_keygen.rc == 0
+  failed_when: vm_to_azure_prep_keygen.rc != 0
 
 - name: Clear history
   ansible.builtin.command:
