@@ -1,5 +1,5 @@
 ---
-- name: Check local file system to see if converted image already exists
+- name: Prepare the local VM for migration to Azure
   hosts: vm
   gather_facts: true
   become: true

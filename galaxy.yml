@@ -14,6 +14,8 @@ tags:
   - "azure"
 dependencies:
   azure.azcollection: ">=1.16.0"
+  ansible.windows: ">=2.0.0"
+  community.general: ">=7.1.0"
 repository: https://github.com/ansible-content-lab/azure.infrastructure_config_demos.git
 documentation: https://github.com/ansible-content-lab/azure.infrastructure_config_demos.git
 homepage: https://github.com/ansible-content-lab/azure.infrastructure_config_demos.git

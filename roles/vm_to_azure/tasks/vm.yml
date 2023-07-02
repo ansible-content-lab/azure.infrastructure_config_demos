@@ -56,9 +56,8 @@
       storage_account: "{{ vm_to_azure_storage_account }}"
     boot_diagnostics:
       enabled: true
-      resource_group: "{{ vm_to_azure_storage_account }}"
+      resource_group: "{{ vm_to_azure_resource_group }}"
       storage_account: "{{ vm_to_azure_storage_account }}"
-    license_type: "{{ vm_to_azure_os_license_type }}"
     tags:
       deployment: ansible
   register: migrate_local_vm

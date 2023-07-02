@@ -20,8 +20,12 @@ The following optional variables may be set to perform tasks that are not requir
 
 ```yaml
 ---
+# User accounts to remove
 vm_to_azure_prep_users:
   - scott
   - hicham
   - matthew
+# Ethernet connections to remove
+vm_to_azure_network_connections_to_remove:
+  - System eth0
 ```

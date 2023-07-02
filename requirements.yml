@@ -3,3 +3,7 @@ collections:
   - name: azure.azcollection
     version: 1.16.0
   - name: ansible.windows
+    version: 2.0.0
+  - name: community.general
+    version: 7.1.0
+    source: https://github.com/ansible-collections/community.general.git

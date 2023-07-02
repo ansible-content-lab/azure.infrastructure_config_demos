@@ -167,20 +167,10 @@
   changed_when: vm_to_azure_prep_regen_grub.rc == 0
   failed_when: vm_to_azure_prep_regen_grub.rc != 0
 
-- name: Add Azure CLI repository
-  ansible.builtin.yum_repository:
-    name: Azure CLI
-    description: Azure CLI repo
-    baseurl: https://packages.microsoft.com/yumrepos/azure-cli
-    enabled: true
-    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
-    gpgcheck: true
-
 - name: Install required cloud packages
   ansible.builtin.dnf:
     name:
       - WALinuxAgent
-      - azure-cli
     state: latest
 
 - name: Enable waagent
@@ -215,21 +205,7 @@
   ansible.builtin.lineinfile:
     path: /etc/waagent.conf
     regexp: 'Provisioning\.Agent'
-    line: 'Provisioning.Agent=auto'
-
-- name: Clean up the existing provisioning details.
-  ansible.builtin.command:
-    cmd: "waagent -force -deprovision"
-  register: vm_to_azure_prep_waagent_deprovision
-  changed_when: vm_to_azure_prep_waagent_deprovision.rc == 0
-  failed_when: vm_to_azure_prep_waagent_deprovision.rc != 0
-
-- name: Generate SSH host keys
-  ansible.builtin.command:
-    cmd: "ssh-keygen -A"
-  register: vm_to_azure_prep_keygen
-  changed_when: vm_to_azure_prep_keygen.rc == 0
-  failed_when: vm_to_azure_prep_keygen.rc != 0
+    line: 'Provisioning.Agent=cloud-init'
 
 - name: Delete user accounts
   when:
@@ -246,19 +222,19 @@
     path: /var/log/waagent.log
     state: absent
 
+- name: Waagent force deprovision user
+  ansible.builtin.command:
+    cmd: "waagent -force -deprovision+user"
+  register: vm_to_azure_deprovision_user
+  changed_when: vm_to_azure_deprovision_user.rc == 0
+  failed_when: vm_to_azure_deprovision_user.rc != 0
+
 - name: Run cloud-init cloud
   ansible.builtin.command:
     cmd: "cloud-init clean"
   register: vm_to_azure_cloud_init_clean
   changed_when: vm_to_azure_cloud_init_clean.rc == 0
   failed_when: vm_to_azure_cloud_init_clean.rc != 0
-
-- name: Deprovision user
-  ansible.builtin.command:
-    cmd: "waagent -force -deprovision+user"
-  register: vm_to_azure_deprovision_user
-  changed_when: vm_to_azure_deprovision_user.rc == 0
-  failed_when: vm_to_azure_deprovision_user.rc != 0
 
 - name: Delete bash history
   ansible.builtin.file:
@@ -271,3 +247,16 @@
   register: vm_to_azure_prep_clear_history
   changed_when: vm_to_azure_prep_clear_history.rc == 0
   failed_when: false
+
+# Azure cloud-init will misbehave if existing network connections exist.
+# If deleting the connection that Ansible uses to connect, then ensure that it is the last item in the list.
+- name: Delete network connections
+  when:
+    - vm_to_azure_network_connections_to_remove is defined
+    - vm_to_azure_network_connections_to_remove | length > 0
+  community.general.nmcli:
+    conn_name: "{{ item }}"
+    state: absent
+  loop: "{{ vm_to_azure_network_connections_to_remove }}"
+  async: 5
+  poll: 0
