@@ -1,5 +1,4 @@
 ---
-# The steps defined in this file are derived from https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/deploying_rhel_8_on_microsoft_azure/assembly_deploying-a-rhel-image-as-a-virtual-machine-on-microsoft-azure_cloud-content-azure
 # If using RHEL, ensure that subscription manager is registered prior to running.
 
 - name: Upgrade all packages
@@ -39,6 +38,9 @@
     name:
       - "cloud-init"
       - "hyperv-daemons"
+      - "cloud-utils-growpart"
+      - "gdisk"
+      - "hyperv-daemons"
     state: latest
 
 - name: Enable logging to the Hyper-V Data Exchange Service (KVP)
@@ -52,6 +54,24 @@
     src: 91-azure_datasource.cfg
     dest: /etc/cloud/cloud.cfg.d/
     mode: '0644'
+
+- name: Configure cloud-init logging
+  ansible.builtin.copy:
+    src: 05_logging.cfg
+    dest: /etc/cloud/cloud.cfg.d/
+    mode: '0644'
+
+# From https://learn.microsoft.com/en-us/azure/virtual-machines/linux/create-upload-generic
+# Configure Cloud-init to create swap.
+# To format and create swap you have 2 options either:
+# Pass this in as a cloud-init config every time you create a VM through customdata. This is the recommended method.  <-- this is why this block is commented out
+# Use a cloud-init directive baked into the image that will do this every time the VM is created.
+# Create cfg file to configure swap using Cloud-init:
+# - name: configure swap using Cloud-init
+#   ansible.builtin.copy:
+#     src: 00-azure-swap.cfg
+#     dest: /etc/cloud/cloud.cfg.d/
+#     mode: '0644'
 
 - name: Disable specific nouveau module
   ansible.builtin.lineinfile:
@@ -147,15 +167,30 @@
   changed_when: vm_to_azure_prep_regen_grub.rc == 0
   failed_when: vm_to_azure_prep_regen_grub.rc != 0
 
+- name: Add Azure CLI repository
+  ansible.builtin.yum_repository:
+    name: Azure CLI
+    description: Azure CLI repo
+    baseurl: https://packages.microsoft.com/yumrepos/azure-cli
+    enabled: true
+    gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+    gpgcheck: true
+
 - name: Install required cloud packages
   ansible.builtin.dnf:
     name:
       - WALinuxAgent
+      - azure-cli
     state: latest
 
 - name: Enable waagent
   ansible.builtin.systemd:
     name: waagent
+    enabled: true
+
+- name: Enable cloud-init
+  ansible.builtin.systemd:
+    name: "cloud-init"
     enabled: true
 
 - name: Modify waagent Provisioning.DeleteRootPassword parameters
@@ -176,12 +211,25 @@
     regexp: 'ResourceDisk\.EnableSwap'
     line: 'ResourceDisk.EnableSwap=n'
 
+- name: Modify waagent Provisioning.Agent parameters
+  ansible.builtin.lineinfile:
+    path: /etc/waagent.conf
+    regexp: 'Provisioning\.Agent'
+    line: 'Provisioning.Agent=auto'
+
 - name: Clean up the existing provisioning details.
   ansible.builtin.command:
     cmd: "waagent -force -deprovision"
   register: vm_to_azure_prep_waagent_deprovision
   changed_when: vm_to_azure_prep_waagent_deprovision.rc == 0
   failed_when: vm_to_azure_prep_waagent_deprovision.rc != 0
+
+- name: Generate SSH host keys
+  ansible.builtin.command:
+    cmd: "ssh-keygen -A"
+  register: vm_to_azure_prep_keygen
+  changed_when: vm_to_azure_prep_keygen.rc == 0
+  failed_when: vm_to_azure_prep_keygen.rc != 0
 
 - name: Delete user accounts
   when:
@@ -193,12 +241,29 @@
     remove: true
   loop: "{{ vm_to_azure_prep_users }}"
 
-- name: Generate SSH host keys
+- name: Delete waagent log
+  ansible.builtin.file:
+    path: /var/log/waagent.log
+    state: absent
+
+- name: Run cloud-init cloud
   ansible.builtin.command:
-    cmd: "ssh-keygen -A"
-  register: vm_to_azure_prep_keygen
-  changed_when: vm_to_azure_prep_keygen.rc == 0
-  failed_when: vm_to_azure_prep_keygen.rc != 0
+    cmd: "cloud-init clean"
+  register: vm_to_azure_cloud_init_clean
+  changed_when: vm_to_azure_cloud_init_clean.rc == 0
+  failed_when: vm_to_azure_cloud_init_clean.rc != 0
+
+- name: Deprovision user
+  ansible.builtin.command:
+    cmd: "waagent -force -deprovision+user"
+  register: vm_to_azure_deprovision_user
+  changed_when: vm_to_azure_deprovision_user.rc == 0
+  failed_when: vm_to_azure_deprovision_user.rc != 0
+
+- name: Delete bash history
+  ansible.builtin.file:
+    path: ~/.bash_history
+    state: absent
 
 - name: Clear history
   ansible.builtin.command:

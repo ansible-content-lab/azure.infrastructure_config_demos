@@ -3,3 +3,4 @@ vm_to_azure_local_image_path: /tmp/
 vm_to_azure_size: Standard_B1s
 vm_to_azure_username: azureuser
 vm_to_azure_hyperv_generation: V2
+vm_to_azure_os_license_type: RHEL_BYOS

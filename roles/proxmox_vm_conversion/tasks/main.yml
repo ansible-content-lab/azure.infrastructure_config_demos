@@ -33,13 +33,13 @@
     file: move_azure_image.yml
 
 - name: Run Proxmox cleanup task
-  when: proxmox_vm_migration_delete_copied_images_after_migration
+  when: proxmox_vm_migration_delete_proxmox_images_after_migration
   ansible.builtin.import_tasks:
     file: cleanup_proxmox.yml
 
 - name: Run local cleanup task
   delegate_to: localhost
   connection: local
-  when: proxmox_vm_migration_delete_copied_images_after_migration
+  when: proxmox_vm_migration_delete_local_images_after_migration
   ansible.builtin.import_tasks:
     file: cleanup_local.yml
