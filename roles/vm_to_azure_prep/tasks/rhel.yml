@@ -236,6 +236,14 @@
   changed_when: vm_to_azure_cloud_init_clean.rc == 0
   failed_when: vm_to_azure_cloud_init_clean.rc != 0
 
+- name: Ensure that the ovf-env file exists to prevent waagent from hanging when VM is migrated
+  ansible.builtin.template:
+    src: ovf-env.xml.j2
+    dest: /var/lib/waagent/ovf-env.xml
+    owner: root
+    group: root
+    mode: '0644'
+
 - name: Delete bash history
   ansible.builtin.file:
     path: ~/.bash_history
@@ -248,7 +256,16 @@
   changed_when: vm_to_azure_prep_clear_history.rc == 0
   failed_when: false
 
-# Azure cloud-init will misbehave if existing network connections exist.
+# Azure cloud-init will misbehave if existing network connections exist.  Create a new network connection and remove existing connections.
+- name: Create network connection
+  community.general.nmcli:
+    conn_name: Cloud Network
+    type: ethernet
+    ifname: eth0
+    method4: auto
+    method6: disabled
+    state: present
+
 # If deleting the connection that Ansible uses to connect, then ensure that it is the last item in the list.
 - name: Delete network connections
   when:
