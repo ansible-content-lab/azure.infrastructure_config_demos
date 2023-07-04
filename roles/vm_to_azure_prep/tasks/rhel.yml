@@ -63,39 +63,45 @@
 
 - name: Disable specific nouveau module
   ansible.builtin.lineinfile:
-    path: /etc/modprobe.d/blocklist.conf
-    regexp: ' nouveau'
+    path: /etc/modprobe.d/blacklist.conf
+    regexp: 'nouveau'
     line: blacklist nouveau
+    create: true
 
 - name: Disable specific lbm-nouveau module
   ansible.builtin.lineinfile:
-    path: /etc/modprobe.d/blocklist.conf
+    path: /etc/modprobe.d/blacklist.conf
     regexp: 'lbm-nouveau'
     line: blacklist lbm-nouveau
+    create: true
 
 - name: Disable specific floppy module
   ansible.builtin.lineinfile:
-    path: /etc/modprobe.d/blocklist.conf
+    path: /etc/modprobe.d/blacklist.conf
     regexp: 'floppy'
     line: blacklist floppy
+    create: true
 
 - name: Disable specific amdgpu module
   ansible.builtin.lineinfile:
-    path: /etc/modprobe.d/blocklist.conf
+    path: /etc/modprobe.d/blacklist.conf
     regexp: 'amdgpu'
     line: blacklist amdgpu
+    create: true
 
 - name: Disable specific skx_edac module
   ansible.builtin.lineinfile:
-    path: /etc/modprobe.d/blocklist.conf
+    path: /etc/modprobe.d/blacklist.conf
     regexp: 'skx_edac'
     line: blacklist skx_edac
+    create: true
 
 - name: Disable specific intel_cstate module
   ansible.builtin.lineinfile:
-    path: /etc/modprobe.d/blocklist.conf
+    path: /etc/modprobe.d/blacklist.conf
     regexp: 'intel_cstate'
     line: blacklist intel_cstate
+    create: true
 
 - name: Remove network device rules
   ansible.builtin.file:
