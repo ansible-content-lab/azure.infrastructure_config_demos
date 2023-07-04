@@ -1,0 +1,19 @@
+---
+- name: Check if the converted disk image file exists
+  ansible.builtin.stat:
+    path: "{{ proxmox_vm_migration_image_dest }}{{ proxmox_vm_migration_image_filename }}"
+  register: proxmox_vm_migration_migration_image_file_status
+
+- name: Convert disk image to Azure compatible format
+  when: not proxmox_vm_migration_migration_image_file_status.stat.exists
+  ansible.builtin.command:
+    cmd: >
+      qemu-img convert
+      -f {{ proxmox_vm_migration_source_format }}
+      -o subformat=fixed,force_size
+      -O vpc
+      {{ proxmox_vm_migration_image_src }}
+      {{ proxmox_vm_migration_image_dest }}
+  register: proxmox_vm_migration_conversion
+  changed_when: proxmox_vm_migration_conversion.rc == 0
+  failed_when: proxmox_vm_migration_conversion.rc != 0

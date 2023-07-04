@@ -14,7 +14,7 @@ spoke2_subnet_name: spoke-2-subnet
 spoke2_subnet_cidr: "10.0.203.0/24"
 ssh_security_group_name: ssh-security-group
 virtual_gw_name: hub-gateway
-virtual_gw_sku: VpnGw2AZ
+virtual_gw_sku: VpnGw2
 virtual_gw_subnet_cidr: "10.0.201.0/26"
 virtual_gw_vpn_type: route_based
 vm_disk_type: Standard_LRS

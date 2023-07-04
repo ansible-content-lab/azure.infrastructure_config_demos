@@ -1,0 +1,6 @@
+---
+- name: Remove migration image on Proxmox
+  ansible.builtin.file:
+    path: "{{ proxmox_vm_migration_image_dest }}"
+    state: absent
+  register: proxmox_vm_migration_delete_proxmox_migration_image_result

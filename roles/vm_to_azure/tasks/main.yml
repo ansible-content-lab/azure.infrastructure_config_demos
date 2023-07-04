@@ -1,0 +1,27 @@
+---
+- name: Fail if variables not defined
+  ansible.builtin.assert:
+    that:
+      - vm_to_azure_file_name is defined
+      - vm_to_azure_resource_group is defined
+      - vm_to_azure_storage_account is defined
+      - vm_to_azure_storage_container is defined
+      - vm_to_azure_image_name is defined
+      - vm_to_azure_name is defined
+      - vm_to_azure_vnet_resource_group is defined
+      - vm_to_azure_vnet_name is defined
+      - vm_to_azure_subnet_name is defined
+      - vm_to_azure_password is defined
+    fail_msg: "Required variables not set"
+
+- name: Run blob storage tasks
+  ansible.builtin.import_tasks:
+    file: blob_storage.yml
+
+- name: Run image tasks
+  ansible.builtin.import_tasks:
+    file: vm_image.yml
+
+- name: Run vm tasks
+  ansible.builtin.import_tasks:
+    file: vm.yml
