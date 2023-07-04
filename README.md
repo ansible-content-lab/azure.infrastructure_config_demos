@@ -71,6 +71,79 @@ priv_network_hosts_pattern: 172.*
 priv_network_ssh_user: azureuser
 ```
 
+#### VM Migration Playbook(s)
+
+Playbooks with "vm_migration" in the title are intended to demonstrate moving VMs hosted in other hypervisors to Azure.  The hope is to have multiple examples of this workflow using Ansible.  In the current examples, three roles are used to prepare and migrate the VM.
+
+When running these playbooks, it is recommended that you clone the VM for preparation and migration to Microsoft so that the updates to the VM do not impact its local running state.
+
+| Role                          | Description                                                                                                                                                                                                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `roles.vm_to_azure_prep`      | This role will prepare the operating system by updating kernel modules and drivers, and installing Azure-required packages.  The role will also prepare the networking of the VM.  This can leave the VM in a state where it cannot be connected to unless the VM is moved to Azure. |
+| `roles.proxmox_vm_conversion` | This role will convert the VM disk image into an Azure-compatible format.  Currently, Proxmox is the hypervisor that is supported. Adding more conversion roles for other hypervisors will come next.                                                                                |
+| `roles.vm_to_azure`           | This role moves the VM disk image to Azure blob storage and then configures and deploys a VM based on the VM image.                                                                                                                                                                  |
+
+There are a number of variables that can be set for each of the roles.  The README for those roles goes into what variables can be set.  However, below is an example of setting variables in an environment file, and then running the playbook locally.
+
+##### Environment File
+
+```yaml
+---
+proxmox_vm_migration_run_if_local_image_exists: true
+proxmox_vm_migration_source_format: qcow2
+proxmox_vm_migration_image_src: /mnt/pve/local/images/108/vm-108-disk-1.qcow2
+proxmox_vm_migration_image_filename: vm-108-disk-1.vhd
+proxmox_vm_migration_image_dest: "/mnt/pve/local/images/108/{{ proxmox_vm_migration_image_filename }}"
+proxmox_vm_id: "108"
+proxmox_vm_migration_start_proxmox_vm: true
+proxmox_vm_migration_delete_proxmox_images_after_migration: true
+vm_to_azure_hyperv_generation: V2
+vm_to_azure_resource_group: resource-group
+vm_to_azure_storage_account: storageaccount
+vm_to_azure_storage_container: vmimages
+vm_to_azure_image_name: vm-108-disk-1-cm
+vm_to_azure_name: vm-migration-test
+vm_to_azure_username: azureuser
+vm_to_azure_vnet_resource_group: vm-vnet-rg
+vm_to_azure_vnet_name: vm-vnet
+vm_to_azure_subnet_name: vm-vnet-subnet
+vm_to_azure_network_connections_to_remove:
+  - System eth0
+```
+
+##### Hosts File
+
+The hosts file should indicate the Proxmox host and the VM in order to connect to both for operations.
+
+```ini
+[proxmox]
+proxmox.host.hostname ansible_user="ansible" ansible_ssh_private_key_file="/home/runner/.ssh/id_ed25519_ansible"
+
+[vm]
+rhel.vm.hostname ansible_user="ansible" ansible_ssh_private_key_file="/home/runner/.ssh/id_ed25519_ansible"
+```
+
+##### Running the Playbook
+
+```bash
+ansible-navigator run playbook_proxmox_vm_migration.yml \
+-i inventory/hosts \
+--pae false \
+--mode stdout \
+--ee true \
+--ce docker \
+--eei quay.io/scottharwell/cloud-ee:latest \
+--eev $HOME/.ssh:/home/runner/.ssh \
+--eev $HOME/.azure:/home/runner/.azure \
+--eev /tmp:/tmp \
+--extra-vars "@env/playbook_proxmox_vm_migration_extra_vars.yml" \
+--extra-vars "proxmox_api_host=$PROXMOX_API_HOSTNAME" \
+--extra-vars "proxmox_api_user=$PROXMOX_USER" \
+--extra-vars "proxmox_api_token=$PROXMOX_API_TOKEN" \
+--extra-vars "proxmox_api_secret=$PROXMOX_API_TOKEN_SECRET" \
+--extra-vars "vm_to_azure_password=$AZURE_VM_ADMIN_PASSWORD"
+```
+
 ## Installation and Usage
 
 ### Ansible Automation Controller or AWX

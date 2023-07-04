@@ -2,7 +2,9 @@
 
 This Ansible role contains Ansible automation to prep local virtual machines (on-prem or not on Azure) with the packages and OS configuration necessary to export the virtual machine and then run it on Azure.
 
-This role is only responsible for the machine preparation.  It does not handle the work of actually moving the machine image to Azure.
+This role is only responsible for the VM preparation.  It does not handle the work of actually moving the machine image to Azure.
+
+It is recommended that you run this role on VMs that are cloned from production instances and not directly against production VMs since it alters boot settings, kernel drivers, and installs packages required by Azure.
 
 ## Using the Role
 

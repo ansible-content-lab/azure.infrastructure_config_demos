@@ -1,6 +1,0 @@
----
-- name: Remove local migration image
-  ansible.builtin.file:
-    path: "{{ proxmox_vm_migration_local_image_path }}{{ proxmox_vm_migration_image_filename }}"
-    state: absent
-  register: proxmox_vm_migration_delete_local_migration_image_result

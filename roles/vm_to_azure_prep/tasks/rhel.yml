@@ -61,18 +61,6 @@
     dest: /etc/cloud/cloud.cfg.d/
     mode: '0644'
 
-# From https://learn.microsoft.com/en-us/azure/virtual-machines/linux/create-upload-generic
-# Configure Cloud-init to create swap.
-# To format and create swap you have 2 options either:
-# Pass this in as a cloud-init config every time you create a VM through customdata. This is the recommended method.  <-- this is why this block is commented out
-# Use a cloud-init directive baked into the image that will do this every time the VM is created.
-# Create cfg file to configure swap using Cloud-init:
-# - name: configure swap using Cloud-init
-#   ansible.builtin.copy:
-#     src: 00-azure-swap.cfg
-#     dest: /etc/cloud/cloud.cfg.d/
-#     mode: '0644'
-
 - name: Disable specific nouveau module
   ansible.builtin.lineinfile:
     path: /etc/modprobe.d/blocklist.conf
