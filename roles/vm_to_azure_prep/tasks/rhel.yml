@@ -19,7 +19,7 @@
   ansible.builtin.copy:
     src: hv.conf
     dest: /etc/dracut.conf.d/
-    mode: '0644'
+    mode: "0644"
 
 - name: Regenerate the initramfs image
   ansible.builtin.command:
@@ -47,61 +47,85 @@
   ansible.builtin.copy:
     src: 10-azure-kvp.cfg
     dest: /etc/cloud/cloud.cfg.d/
+    owner: root
+    group: root
     mode: '0644'
 
 - name: Add Azure as a datasource
   ansible.builtin.copy:
     src: 91-azure_datasource.cfg
     dest: /etc/cloud/cloud.cfg.d/
+    owner: root
+    group: root
     mode: '0644'
 
 - name: Configure cloud-init logging
   ansible.builtin.copy:
     src: 05_logging.cfg
     dest: /etc/cloud/cloud.cfg.d/
+    owner: root
+    group: root
     mode: '0644'
 
 - name: Disable specific nouveau module
   ansible.builtin.lineinfile:
     path: /etc/modprobe.d/blacklist.conf
-    regexp: 'nouveau'
+    regexp: "nouveau"
     line: blacklist nouveau
     create: true
+    owner: root
+    group: root
+    mode: '0644'
 
 - name: Disable specific lbm-nouveau module
   ansible.builtin.lineinfile:
     path: /etc/modprobe.d/blacklist.conf
-    regexp: 'lbm-nouveau'
+    regexp: "lbm-nouveau"
     line: blacklist lbm-nouveau
     create: true
+    owner: root
+    group: root
+    mode: '0644'
 
 - name: Disable specific floppy module
   ansible.builtin.lineinfile:
     path: /etc/modprobe.d/blacklist.conf
-    regexp: 'floppy'
+    regexp: "floppy"
     line: blacklist floppy
     create: true
+    owner: root
+    group: root
+    mode: '0644'
 
 - name: Disable specific amdgpu module
   ansible.builtin.lineinfile:
     path: /etc/modprobe.d/blacklist.conf
-    regexp: 'amdgpu'
+    regexp: "amdgpu"
     line: blacklist amdgpu
     create: true
+    owner: root
+    group: root
+    mode: '0644'
 
 - name: Disable specific skx_edac module
   ansible.builtin.lineinfile:
     path: /etc/modprobe.d/blacklist.conf
-    regexp: 'skx_edac'
+    regexp: "skx_edac"
     line: blacklist skx_edac
     create: true
+    owner: root
+    group: root
+    mode: '0644'
 
 - name: Disable specific intel_cstate module
   ansible.builtin.lineinfile:
     path: /etc/modprobe.d/blacklist.conf
-    regexp: 'intel_cstate'
+    regexp: "intel_cstate"
     line: blacklist intel_cstate
     create: true
+    owner: root
+    group: root
+    mode: '0644'
 
 - name: Remove network device rules
   ansible.builtin.file:
@@ -122,36 +146,36 @@
   ansible.builtin.copy:
     src: 68-azure-sriov-nm-unmanaged.rules
     dest: /etc/udev/rules.d/
-    mode: '0644'
+    mode: "0644"
 
 - name: Modify GRUB_TIMEOUT kernel boot parameters
   ansible.builtin.lineinfile:
     path: /etc/default/grub
-    regexp: 'GRUB_TIMEOUT'
-    line: 'GRUB_TIMEOUT=10'
+    regexp: "GRUB_TIMEOUT"
+    line: "GRUB_TIMEOUT=10"
 
 - name: Modify GRUB_CMDLINE_LINUX kernel boot parameters
   ansible.builtin.lineinfile:
     path: /etc/default/grub
-    regexp: 'GRUB_CMDLINE_LINUX'
+    regexp: "GRUB_CMDLINE_LINUX"
     line: 'GRUB_CMDLINE_LINUX="loglevel=3 crashkernel=auto console=tty1 console=ttyS0 earlyprintk=ttyS0 rootdelay=300"'
 
 - name: Modify GRUB_TIMEOUT_STYLE kernel boot parameters
   ansible.builtin.lineinfile:
     path: /etc/default/grub
-    regexp: 'GRUB_TIMEOUT_STYLE'
-    line: 'GRUB_TIMEOUT_STYLE=countdown'
+    regexp: "GRUB_TIMEOUT_STYLE"
+    line: "GRUB_TIMEOUT_STYLE=countdown"
 
 - name: Modify GRUB_TERMINAL kernel boot parameters
   ansible.builtin.lineinfile:
     path: /etc/default/grub
-    regexp: 'GRUB_TERMINAL'
+    regexp: "GRUB_TERMINAL"
     line: 'GRUB_TERMINAL="serial console"'
 
 - name: Modify GRUB_SERIAL_COMMAND kernel boot parameters
   ansible.builtin.lineinfile:
     path: /etc/default/grub
-    regexp: 'GRUB_SERIAL_COMMAND'
+    regexp: "GRUB_SERIAL_COMMAND"
     line: 'GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1"'
 
 - name: Regenerate the grub.cfg file
@@ -181,25 +205,25 @@
   ansible.builtin.lineinfile:
     path: /etc/waagent.conf
     regexp: 'Provisioning\.DeleteRootPassword'
-    line: 'Provisioning.DeleteRootPassword=y'
+    line: "Provisioning.DeleteRootPassword=y"
 
 - name: Modify waagent ResourceDisk.Format parameters
   ansible.builtin.lineinfile:
     path: /etc/waagent.conf
     regexp: 'ResourceDisk\.Format'
-    line: 'ResourceDisk.Format=n'
+    line: "ResourceDisk.Format=n"
 
 - name: Modify waagent ResourceDisk.EnableSwap parameters
   ansible.builtin.lineinfile:
     path: /etc/waagent.conf
     regexp: 'ResourceDisk\.EnableSwap'
-    line: 'ResourceDisk.EnableSwap=n'
+    line: "ResourceDisk.EnableSwap=n"
 
 - name: Modify waagent Provisioning.Agent parameters
   ansible.builtin.lineinfile:
     path: /etc/waagent.conf
     regexp: 'Provisioning\.Agent'
-    line: 'Provisioning.Agent=cloud-init'
+    line: "Provisioning.Agent=cloud-init"
 
 - name: Delete user accounts
   when:
@@ -236,7 +260,7 @@
     dest: /var/lib/waagent/ovf-env.xml
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
 
 - name: Delete bash history
   ansible.builtin.file:
