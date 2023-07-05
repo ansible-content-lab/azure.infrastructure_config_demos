@@ -1,4 +1,4 @@
-# Transit Network Deployment Role
+# Virtual Machine Role
 
 This Ansible role contains repeatable automation for virtual machine management on Azure.
 

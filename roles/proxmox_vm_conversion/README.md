@@ -1,4 +1,4 @@
-# VM to Azure Role
+# Proxmox VM Conversion Role
 
 This Ansible role contains automation that will take a running Proxmox virtual machine, convert its disk image to an Azure-compatible disk image, and then move the created disk image to localhost.  The following steps occur in the order listed.
 
