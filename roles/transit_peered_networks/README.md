@@ -4,7 +4,7 @@ This Ansible role contains repeatable automation for a hub-and-spoke VNET peerin
 
 ## Create Transit Network
 
-This operation will create the resources necessary for a transit network model with three VNETs. 
+This operation will create the resources necessary for a transit network model with three VNETs.
 
 1. One acting as a public internet-facing DMZ where bastion servers and other internet resources could exist.
 2. Another that acts as an entirely private network with no internet access.
