@@ -1,0 +1,9 @@
+---
+ancestor: 1.4.2
+releases:
+  1.5.0:
+    release_date: "2023-07-13"
+    changes:
+      release_summary: Added the release changelog.
+      minor_changes:
+        - Required Ansible Lint rule for change logs.

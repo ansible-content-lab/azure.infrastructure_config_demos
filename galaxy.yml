@@ -1,13 +1,11 @@
 ---
 namespace: azure
 name: infrastructure_config_demos
-version: 1.4.2
+version: 1.5.0
 readme: README.md
 authors:
   - Scott Harwell <sharwell@redhat.com>
 description: Azure use cases in the Ansible Cloud Content Incubation program.
-license:
-  - GPL-3.0-or-later
 license_file: "LICENSE"
 tags:
   - "cloud"

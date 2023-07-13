@@ -8,3 +8,8 @@ repos:
     rev: v0.35.0
     hooks:
       - id: markdownlint
+  - repo: https://github.com/ansible-community/antsibull-changelog.git
+    rev: main
+    hooks:
+      - id: antsibull-changelog-lint
+      - id: antsibull-changelog-lint-changelog-yaml
