@@ -1,38 +1,35 @@
-Role Name
-=========
+# VNET Role
 
-A brief description of the role goes here.
+This Ansible role contains repeatable automation for deploying and removing a VNET and a subnet on Azure.
 
-Requirements
-------------
+## Create VNET
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Creates a virtual network in an Azure resource group.
 
-Role Variables
---------------
+### Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+The following variables are used during deployment and can be configured as extra vars at deploy time if you require something other than the defaults.
 
-Dependencies
-------------
+```yaml
+---
+region: eastus
+resource_group: rg
+route_table_name: route-table
+vnet_name: vnet
+vnet_cidr: 10.0.200.0/23
+subnet_name: subnet
+subnet_cidr: 10.0.200.0/24
+```
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+## Delete VNET
 
-Example Playbook
-----------------
+The delete vm task removes VNET based on the resources created in the `create` task.
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```yaml
+---
+resource_group: rh
+vm_name: rhel9-test
+nic_name: rhel9-test-nic
+network_sec_group_name: rhel9-test-sg
+public_ip_name: rhel9-test-public-ip
+```
