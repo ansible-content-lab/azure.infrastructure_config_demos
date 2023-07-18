@@ -134,7 +134,7 @@ ansible-navigator run playbook_proxmox_vm_migration.yml \
 --ce docker \
 --eei quay.io/scottharwell/cloud-ee:latest \
 --eev $HOME/.ssh:/home/runner/.ssh \
---eev $HOME/.azure:/home/runner/.azure \
+--eev $HOME/.azure:/runner/.azure \
 --eev /tmp:/tmp \
 --extra-vars "@env/playbook_proxmox_vm_migration_extra_vars.yml" \
 --extra-vars "proxmox_api_host=$PROXMOX_API_HOSTNAME" \

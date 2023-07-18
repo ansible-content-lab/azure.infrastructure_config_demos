@@ -1,0 +1,62 @@
+---
+- name: Configure Resource Group
+  tags:
+    - rg
+  block:
+    - name: Create Resource Group
+      azure.azcollection.azure_rm_resourcegroup:
+        name: "{{ resource_group }}"
+        location: "{{ region }}"
+        state: present
+        tags:
+          deployment: ansible
+          ansible-collection: azure.infrastructure_config_demos
+          ansible-role: vnet
+          ansible-task: create
+
+- name: Configure Networking
+  tags:
+    - network
+    - peering
+    - routes
+  block:
+    - name: Create a route table
+      azure.azcollection.azure_rm_routetable:
+        resource_group: "{{ resource_group }}"
+        name: "{{ route_table_name }}"
+        disable_bgp_route_propagation: true
+        tags:
+          deployment: ansible
+          ansible-collection: azure.infrastructure_config_demos
+          ansible-role: vnet
+          ansible-task: create
+      register: vnet_route_table
+
+    - name: Create VNET
+      azure.azcollection.azure_rm_virtualnetwork:
+        resource_group: "{{ resource_group }}"
+        name: "{{ vnet_name }}"
+        address_prefixes_cidr:
+          - "{{ vnet_cidr }}"
+        state: present
+        tags:
+          deployment: ansible
+          network-role: hub
+          ansible-collection: azure.infrastructure_config_demos
+          ansible-role: vnet
+          ansible-task: create
+      register: vnet_vnet
+
+    - name: Sleep for 5 seconds so that Azure recognizes the VNET before subnet creation
+      ansible.builtin.wait_for:
+        timeout: 5
+      delegate_to: localhost
+
+    - name: Create Subnet
+      azure.azcollection.azure_rm_subnet:
+        resource_group: "{{ resource_group }}"
+        name: "{{ subnet_name }}"
+        virtual_network_name: "{{ vnet_vnet.state.name }}"
+        address_prefix_cidr: "{{ subnet_cidr }}"
+        state: present
+      register: vnet_subnet

@@ -1,15 +1,9 @@
 ---
-- name: Create Network Security Group that allows SSH
+- name: Create Network Security Group that allows VM ports
   azure.azcollection.azure_rm_securitygroup:
     resource_group: "{{ resource_group }}"
     name: "{{ network_sec_group_name }}"
-    rules:
-      - name: SSH
-        protocol: Tcp
-        destination_port_range: 22
-        access: Allow
-        priority: 1001
-        direction: Inbound
+    rules: "{{ create_vm_security_group_rules }}"
     tags:
       ansible-collection: azure.infrastructure_config_demos
       ansible-role: vms
@@ -63,22 +57,24 @@
     vm_size: "{{ vm_size }}"
     managed_disk_type: "{{ disk_type }}"
     admin_username: "{{ admin_user }}"
-    ssh_password_enabled: false
-    ssh_public_keys:
-      - path: "/home/{{ admin_user }}/.ssh/authorized_keys"
-        key_data: "{{ ssh_public_key }}"
+    admin_password: "{{ admin_password }}"
+    linux_config: "{{ linux_config | default(omit) }}"
+    ssh_password_enabled: "{{ ssh_password_enabled | default(omit) }}"
+    ssh_public_keys: "{{ ssh_public_keys | default(omit) }}"
     network_interfaces: "{{ nic_name }}"
+    os_type: "{{ os_type }}"
     image:
-      offer: RHEL
-      publisher: RedHat
-      sku: "{{ rhel_vm_sku }}"
-      version: latest
-    max_price: "{{ max_price | default(-1) }}"
-    priority: "{{ priority | default('None') }}"
+      offer: "{{ create_vm_offer }}"
+      publisher: "{{ create_vm_publisher }}"
+      sku: "{{ create_vm_sku }}"
+      version: "{{ create_vm_version }}"
+    max_price: "{{ create_vm_max_price }}"
+    priority: "{{ create_vm_priority }}"
     tags:
       ansible-collection: azure.infrastructure_config_demos
       ansible-role: vms
-      ansible-task: create_rhel_vm
+      ansible-task: create_vm
+      blueprint: "{{ create_vm_blueprint | default(omit) }}"
 
 - name: Dump Private IP for VM which will be created
   ansible.builtin.debug:

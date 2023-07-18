@@ -67,7 +67,7 @@
           hub_gw_public_ip: "{{ transit_peered_networks_hub_gw_public_ip.state.ip_address }}"
         per_host: false
 
-    - name: Create Hub Subnet
+    - name: Create Gateway Subnet
       azure.azcollection.azure_rm_subnet:
         resource_group: "{{ resource_group }}"
         name: GatewaySubnet
