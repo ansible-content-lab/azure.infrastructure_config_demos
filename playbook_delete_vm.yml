@@ -1,5 +1,5 @@
 ---
-- name: Delete RHEL Demo VM
+- name: Delete VM
   hosts: localhost
   connection: local
   gather_facts: false
@@ -8,9 +8,11 @@
       ansible.builtin.assert:
         that:
           - resource_group is defined
+          - vm_name is defined
         fail_msg: "Required variables not set"
 
-    - name: Delete RHEL VMs
+    - name: Delete VM
       ansible.builtin.import_role:
         name: vms
-        tasks_from: delete_rhel_vm
+      vars:
+        vms_operation: delete

@@ -1,0 +1,8 @@
+---
+create_vm_publisher: RedHat
+create_vm_offer: RHEL
+create_vm_sku: "9_2"
+create_vm_version: latest
+linux_config:
+  disable_password_authentication: true
+ssh_password_enabled: false

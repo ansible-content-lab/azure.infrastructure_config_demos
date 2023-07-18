@@ -1,0 +1,12 @@
+---
+create_vm_publisher: MicrosoftWindowsServer
+create_vm_offer: WindowsServer
+create_vm_sku: 2022-Datacenter
+create_vm_version: latest
+create_vm_security_group_rules:
+  - name: RDP
+    protocol: Tcp
+    destination_port_range: 3389
+    access: Allow
+    priority: 1002
+    direction: Inbound

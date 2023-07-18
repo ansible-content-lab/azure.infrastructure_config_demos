@@ -1,0 +1,21 @@
+---
+- name: Delete VNET
+  azure.azcollection.azure_rm_virtualnetwork:
+    resource_group: "{{ resource_group }}"
+    name: "{{ vnet_name }}"
+  state: absent
+
+- name: Delete route table
+  azure.azcollection.azure_rm_routetable:
+    resource_group: "{{ resource_group }}"
+    name: "{{ route_table_name }}"
+  state: absent
+  when: route_table_name is defined
+
+- name: Create Resource Group
+  azure.azcollection.azure_rm_resourcegroup:
+    name: "{{ resource_group }}"
+  state: absent
+  when:
+    - delete_resource_group is defined
+    - delete_resource_group

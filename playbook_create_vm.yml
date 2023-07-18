@@ -1,0 +1,46 @@
+---
+- name: Create VM
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - "vars/vm_blueprints/{{ vm_blueprint }}.yml"
+  tasks:
+    - name: Fail if variables not defined
+      ansible.builtin.assert:
+        that:
+          - region is defined
+          - resource_group is defined
+          - vm_name is defined
+          - os_type is defined
+          - nic_name is defined
+          - network_sec_group_name is defined
+          - public_ip_name is defined
+          - vnet_name is defined
+          - subnet_name is defined
+          - create_public_ip is defined
+          - admin_user is defined
+          - admin_password is defined
+        fail_msg: "Required variables not set"
+
+    - name: Fail for Linux-specific rquirements
+      ansible.builtin.assert:
+        that:
+          - ssh_public_keys is defined
+        fail_msg: "Required variables not set"
+      when:
+        - "'linux' in (os_type | lower)"
+
+    - name: Fail for Windows-specific rquirements
+      ansible.builtin.assert:
+        that:
+          - admin_password is defined
+        fail_msg: "Required variables not set"
+      when:
+        - "'windows' in (os_type | lower)"
+
+    - name: Create a VM
+      ansible.builtin.import_role:
+        name: vms
+      vars:
+        vms_operation: create

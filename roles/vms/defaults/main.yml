@@ -1,6 +1,12 @@
 ---
 vm_size: Standard_DS3_v2
 disk_type: Standard_LRS
-admin_user: azureuser
-rhel_vm_sku: "8_6"
-windows_vm_sku: 2022-Datacenter
+create_vm_priority: None
+create_vm_max_price: -1
+create_vm_security_group_rules:
+  - name: SSH
+    protocol: Tcp
+    destination_port_range: 22
+    access: Allow
+    priority: 1001
+    direction: Inbound

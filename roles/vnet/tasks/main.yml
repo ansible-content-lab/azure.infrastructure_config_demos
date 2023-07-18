@@ -1,0 +1,8 @@
+---
+- name: Check operation validation
+  ansible.builtin.fail:
+    msg: "Please provide operation as 'create' or 'delete'"
+  when: vnet_operation not in ['create', 'delete']
+
+- name: Include operation tasks
+  ansible.builtin.include_tasks: "{{ vnet_operation }}.yml"
