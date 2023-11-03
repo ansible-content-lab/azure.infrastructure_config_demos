@@ -6,6 +6,25 @@ Azure.Infrastructure_Config_Demos Release Notes
 
 This changelog describes changes after version 1.4.2.
 
+v1.7.0
+======
+
+Release Summary
+---------------
+
+Moved playbooks into playbooks folder and updated dependency versions.
+
+Major Changes
+-------------
+
+- Moved playbooks into playbooks folder so that playbooks may be called from `namespace.collection.playbook` syntax.
+- Updated dependency versions.
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- Playbook paths have changed.
+
 v1.6.0
 ======
 

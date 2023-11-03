@@ -30,22 +30,22 @@ Click on the role name to be directed to the README specifically for that role.
 
 | Name                                                | Role(s) Used                                                                              | Description                                                                                                                                    |
 | --------------------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `playbook_create_transit_network.yml`               | `roles.transit_peered_networks`                                                           | A playbook to create a multi-VPC hub-and-spoke network configuration using a transit gateway with DMZ and private networks.                    |
-| `playbook_delete_transit_network.yml`               | `roles.transit_peered_networks`                                                           | Deletes AWS resources created in the `playbook_create_transit_network` playbook.                                                               |
-| `playbook_create_resource_group.yml`                | N/A                                                                                       | Simple playbook demonstrating how to create an Azure resource group from extra vars.                                                           |
-| `playbook_create_vm.yml`                            | `roles.vms`                                                                               | A playbook that allows for VM creation using blueprints of defined variables.                                                                  |
-| `playbook_delete_vm.yml`                            | `roles.vms`                                                                               | Deletes  virtual machines and connected resources                                                                                              |
-| `playbook_delete_resource_group.yml`                | N/A                                                                                       | Deletes a resource group and all resources within it.                                                                                          |
-| `playbook_update_rhel_vms.yml`                      | N/A                                                                                       | Runs `dnf upgrade -y` on RHEL VMs.                                                                                                             |
-| `playbook_create_log_analytics_workspace.yml`       | `role.log_analytics`                                                                      | Creates a Log Analytics workspace for storing log data with logging extensions.                                                                |
-| `playbook_install_log_analytics_agent.yml`          | `roles.log_analytics`                                                                     | Deploys a Log Analytics workspace into your Azure subscription and then installs and configures Linux hosts to communicate with the workspace. |
-| `playbook_uninstall_log_analytics_agent.yml`        | `roles.log_analytics`                                                                     | Uninstalls the Log Analytics agent on Linux hosts and then deletes the Log Analytics workspace from your Azure subscription.                   |
-| `playbook_install_arc_agent.yml`                    | `roles.arc`                                                                               | Installs the Azure Arc agent on inventory hosts.                                                                                               |
-| `playbook_replace_log_analytics_with_arc_linux.yml` | `roles.arc`                                                                               | Installs the Arc agent, deploys the Azure Monitoring extension, and removes the log analytics extension or agent on Linux hosts.               |
-| `playbook_enable_arc_azure_monitor.yml`             | `roles.arc`                                                                               | Enables the Azure Monitor extension on servers that have the Azure Arc agent installed.                                                        |
-| `playbook_enable_arc_extension.yml`                 | `roles.arc`                                                                               | Enables an Azure Arc extension.                                                                                                                |
-| `playbook_disable_arc_extension.yml`                | `roles.arc`                                                                               | Disables an Azure Arc extension.                                                                                                               |
-| `playbook_proxmox_vm_migration.yml`                 | 1. `roles.vm_to_azure_prep`<br>2. `roles.proxmox_vm_convertion`<br>3. `roles.vm_to_azure` | Prepares a local Proxmox virtual machine to run in Azure, uploads the disk image, and creates an Azure virtual machine.                        |
+| `create_transit_network.yml`               | `roles.transit_peered_networks`                                                           | A playbook to create a multi-VPC hub-and-spoke network configuration using a transit gateway with DMZ and private networks.                    |
+| `delete_transit_network.yml`               | `roles.transit_peered_networks`                                                           | Deletes AWS resources created in the `create_transit_network` playbook.                                                               |
+| `create_resource_group.yml`                | N/A                                                                                       | Simple playbook demonstrating how to create an Azure resource group from extra vars.                                                           |
+| `create_vm.yml`                            | `roles.vms`                                                                               | A playbook that allows for VM creation using blueprints of defined variables.                                                                  |
+| `delete_vm.yml`                            | `roles.vms`                                                                               | Deletes  virtual machines and connected resources                                                                                              |
+| `delete_resource_group.yml`                | N/A                                                                                       | Deletes a resource group and all resources within it.                                                                                          |
+| `update_rhel_vms.yml`                      | N/A                                                                                       | Runs `dnf upgrade -y` on RHEL VMs.                                                                                                             |
+| `create_log_analytics_workspace.yml`       | `role.log_analytics`                                                                      | Creates a Log Analytics workspace for storing log data with logging extensions.                                                                |
+| `install_log_analytics_agent.yml`          | `roles.log_analytics`                                                                     | Deploys a Log Analytics workspace into your Azure subscription and then installs and configures Linux hosts to communicate with the workspace. |
+| `uninstall_log_analytics_agent.yml`        | `roles.log_analytics`                                                                     | Uninstalls the Log Analytics agent on Linux hosts and then deletes the Log Analytics workspace from your Azure subscription.                   |
+| `install_arc_agent.yml`                    | `roles.arc`                                                                               | Installs the Azure Arc agent on inventory hosts.                                                                                               |
+| `replace_log_analytics_with_arc_linux.yml` | `roles.arc`                                                                               | Installs the Arc agent, deploys the Azure Monitoring extension, and removes the log analytics extension or agent on Linux hosts.               |
+| `enable_arc_azure_monitor.yml`             | `roles.arc`                                                                               | Enables the Azure Monitor extension on servers that have the Azure Arc agent installed.                                                        |
+| `enable_arc_extension.yml`                 | `roles.arc`                                                                               | Enables an Azure Arc extension.                                                                                                                |
+| `disable_arc_extension.yml`                | `roles.arc`                                                                               | Disables an Azure Arc extension.                                                                                                               |
+| `proxmox_vm_migration.yml`                 | 1. `roles.vm_to_azure_prep`<br>2. `roles.proxmox_vm_convertion`<br>3. `roles.vm_to_azure` | Prepares a local Proxmox virtual machine to run in Azure, uploads the disk image, and creates an Azure virtual machine.                        |
 <!--end collection content-->
 
 #### Create Network Playbooks
@@ -126,7 +126,7 @@ rhel.vm.hostname ansible_user="ansible" ansible_ssh_private_key_file="/home/runn
 ##### Running the Playbook
 
 ```bash
-ansible-navigator run playbook_proxmox_vm_migration.yml \
+ansible-navigator run azure.infrastructure_config_demos.proxmox_vm_migration \
 -i inventory/hosts \
 --pae false \
 --mode stdout \
@@ -136,7 +136,7 @@ ansible-navigator run playbook_proxmox_vm_migration.yml \
 --eev $HOME/.ssh:/home/runner/.ssh \
 --eev $HOME/.azure:/runner/.azure \
 --eev /tmp:/tmp \
---extra-vars "@env/playbook_proxmox_vm_migration_extra_vars.yml" \
+--extra-vars "@env/proxmox_vm_migration_extra_vars.yml" \
 --extra-vars "proxmox_api_host=$PROXMOX_API_HOSTNAME" \
 --extra-vars "proxmox_api_user=$PROXMOX_USER" \
 --extra-vars "proxmox_api_token=$PROXMOX_API_TOKEN" \

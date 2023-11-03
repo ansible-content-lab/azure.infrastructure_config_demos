@@ -1,20 +1,32 @@
----
 ancestor: 1.4.2
 releases:
   1.5.0:
-    release_date: "2023-07-13"
     changes:
-      release_summary: Added the release changelog.
       minor_changes:
         - Required Ansible Lint rule for change logs.
+      release_summary: Added the release changelog.
+    release_date: "2023-07-13"
   1.6.0:
-    release_date: "2023-07-18"
     changes:
-      release_summary: Added VM blueprints and simple VNET role.
+      breaking_changes:
+        - Added and removed playbooks to account for role changes.
+        - Removed OS-specific playbook and role tasks and created a generic VM creation
+          model based on VM blueprints.
       major_changes:
         - Added a VNET role to provide an example of simple VNET creation.
-      breaking_changes:
-        - Removed OS-specific playbook and role tasks and created a generic VM creation model based on VM blueprints.
-        - Added and removed playbooks to account for role changes.
       minor_changes:
         - Readme updates
+      release_summary: Added VM blueprints and simple VNET role.
+    release_date: "2023-07-18"
+  1.7.0:
+    changes:
+      breaking_changes:
+        - Playbook paths have changed.
+      major_changes:
+        - Moved playbooks into playbooks folder so that playbooks may be called from
+          `namespace.collection.playbook` syntax.
+        - Updated dependency versions.
+      release_summary:
+        Moved playbooks into playbooks folder and updated dependency
+        versions.
+    release_date: "2023-07-18"
