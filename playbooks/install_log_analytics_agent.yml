@@ -6,7 +6,7 @@
   tasks:
     - name: Install log analytics agent
       ansible.builtin.import_role:
-        name: log_analytics
+        name: lab.azure_infrastructure_config_demos.log_analytics
         tasks_from: install_agent
       vars:
         log_analytics_workspace: "{{ workspace_name }}"

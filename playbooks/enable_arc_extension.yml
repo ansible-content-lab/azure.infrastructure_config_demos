@@ -21,7 +21,7 @@
 
     - name: Enable Key Vault on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: enable_arc_extension
       vars:
         arc_name: "{{ extensions.azure_key_vault.name }}"
@@ -31,7 +31,7 @@
 
     - name: Enable Hybrid Worker on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: enable_arc_extension
       vars:
         arc_name: "{{ extensions.azure_hybrid_runbook.name }}"
@@ -41,7 +41,7 @@
 
     - name: Enable Azure Monitor on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: enable_arc_extension
       vars:
         arc_name: "{{ extensions.azure_monitor_agent.name }}"
@@ -51,7 +51,7 @@
 
     - name: Enable Azure Monitor for VMs Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: enable_arc_extension
       vars:
         arc_name: "{{ extensions.azure_monitor_for_vms.name }}"
@@ -61,7 +61,7 @@
 
     - name: Enable AD SSH Login on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: enable_arc_extension
       vars:
         arc_name: "{{ extensions.ad_ssh_login.name }}"
@@ -71,7 +71,7 @@
 
     - name: Enable Custom Scripts on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: enable_arc_extension
       vars:
         arc_name: "{{ extensions.custom_script.name }}"
@@ -81,7 +81,7 @@
 
     - name: Enable Azure Log Analytics on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: enable_arc_extension
       vars:
         arc_name: "{{ extensions.log_analytics_agent.name }}"
@@ -91,7 +91,7 @@
 
     - name: Enable Microsoft Defender on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: enable_arc_extension
       vars:
         arc_name: "{{ extensions.microsoft_defender.name }}"
