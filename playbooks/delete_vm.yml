@@ -13,6 +13,6 @@
 
     - name: Delete VM
       ansible.builtin.import_role:
-        name: vms
+        name: lab.azure_infrastructure_config_demos.vms
       vars:
         vms_operation: delete

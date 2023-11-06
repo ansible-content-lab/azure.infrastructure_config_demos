@@ -19,7 +19,7 @@
   tasks:
     - name: Check if the converted image file already exists locally
       ansible.builtin.import_role:
-        name: proxmox_vm_conversion
+        name: lab.azure_infrastructure_config_demos.proxmox_vm_conversion
         tasks_from: local_vm_image_check
   tags:
     - proxmox
@@ -33,7 +33,7 @@
       when: not hostvars['localhost'].proxmox_vm_migration_local_image_exists.stat.exists or
             proxmox_vm_migration_run_if_local_image_exists
       ansible.builtin.import_role:
-        name: proxmox_vm_conversion
+        name: lab.azure_infrastructure_config_demos.proxmox_vm_conversion
   tags:
     - proxmox
 
@@ -47,6 +47,6 @@
   tasks:
     - name: Run migrate local vm role
       ansible.builtin.import_role:
-        name: vm_to_azure
+        name: lab.azure_infrastructure_config_demos.vm_to_azure
   tags:
     - azure

@@ -18,6 +18,6 @@
 
     - name: Create a VNET
       ansible.builtin.import_role:
-        name: vnet
+        name: lab.azure_infrastructure_config_demos.vnet
       vars:
         vnet_operation: create

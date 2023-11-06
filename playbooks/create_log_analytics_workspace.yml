@@ -13,5 +13,5 @@
 
     - name: Deploy log analytics workspace
       ansible.builtin.import_role:
-        name: log_analytics
+        name: lab.azure_infrastructure_config_demos.log_analytics
         tasks_from: create_workspace

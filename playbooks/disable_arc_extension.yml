@@ -15,7 +15,7 @@
 
     - name: Disable Key Vault on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: disable_arc_extension
       vars:
         arc_name: "{{ extensions.azure_key_vault.name }}"
@@ -25,7 +25,7 @@
 
     - name: Disable Hybrid Worker on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: disable_arc_extension
       vars:
         arc_name: "{{ extensions.azure_hybrid_runbook.name }}"
@@ -35,7 +35,7 @@
 
     - name: Disable Azure Monitor on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: disable_arc_extension
       vars:
         arc_name: "{{ extensions.azure_monitor_agent.name }}"
@@ -45,7 +45,7 @@
 
     - name: Disable Azure Monitor for VMs Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: disable_arc_extension
       vars:
         arc_name: "{{ extensions.azure_monitor_for_vms.name }}"
@@ -55,7 +55,7 @@
 
     - name: Disable AD SSH Login on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: disable_arc_extension
       vars:
         arc_name: "{{ extensions.ad_ssh_login.name }}"
@@ -65,7 +65,7 @@
 
     - name: Disable Custom Scripts on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: disable_arc_extension
       vars:
         arc_name: "{{ extensions.custom_script.name }}"
@@ -75,7 +75,7 @@
 
     - name: Disable Azure Log Analytics on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: disable_arc_extension
       vars:
         arc_name: "{{ extensions.log_analytics_agent.name }}"
@@ -85,7 +85,7 @@
 
     - name: Disable Microsoft Defender on Linux
       ansible.builtin.import_role:
-        name: arc
+        name: lab.azure_infrastructure_config_demos.arc
         tasks_from: disable_arc_extension
       vars:
         arc_name: "{{ extensions.microsoft_defender.name }}"
