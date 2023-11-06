@@ -10,7 +10,7 @@
         state: present
         tags:
           deployment: ansible
-          ansible-collection: azure.infrastructure_config_demos
+          ansible-collection: lab.azure.azure_infrastructure_config_demos
           ansible-role: vnet
           ansible-task: create
 
@@ -27,7 +27,7 @@
         disable_bgp_route_propagation: true
         tags:
           deployment: ansible
-          ansible-collection: azure.infrastructure_config_demos
+          ansible-collection: lab.azure.azure_infrastructure_config_demos
           ansible-role: vnet
           ansible-task: create
       register: vnet_route_table
@@ -42,7 +42,7 @@
         tags:
           deployment: ansible
           network-role: hub
-          ansible-collection: azure.infrastructure_config_demos
+          ansible-collection: lab.azure.azure_infrastructure_config_demos
           ansible-role: vnet
           ansible-task: create
       register: vnet_vnet

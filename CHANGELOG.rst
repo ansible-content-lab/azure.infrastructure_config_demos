@@ -1,5 +1,5 @@
 ===============================================
-Azure.Infrastructure_Config_Demos Release Notes
+lab.azure.azure_infrastructure_config_demos Release Notes
 ===============================================
 
 .. contents:: Topics

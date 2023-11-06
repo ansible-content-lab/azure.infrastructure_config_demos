@@ -27,6 +27,6 @@ sections:
     - Bugfixes
   - - known_issues
     - Known Issues
-title: Azure.Infrastructure_Config_Demos
+title: lab.azure.azure_infrastructure_config_demos
 trivial_section_name: trivial
 use_fqcn: true

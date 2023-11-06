@@ -5,7 +5,7 @@
     name: "{{ network_sec_group_name }}"
     rules: "{{ create_vm_security_group_rules }}"
     tags:
-      ansible-collection: azure.infrastructure_config_demos
+      ansible-collection: lab.azure.azure_infrastructure_config_demos
       ansible-role: vms
       ansible-task: create_rhel_vm
 
@@ -17,7 +17,7 @@
     subnet: "{{ subnet_name }}"
     security_group: "{{ network_sec_group_name }}"
     tags:
-      ansible-collection: azure.infrastructure_config_demos
+      ansible-collection: lab.azure.azure_infrastructure_config_demos
       ansible-role: vms
       ansible-task: create_rhel_vm
   register: vnic_results
@@ -29,7 +29,7 @@
     allocation_method: Static
     name: "{{ public_ip_name }}"
     tags:
-      ansible-collection: azure.infrastructure_config_demos
+      ansible-collection: lab.azure.azure_infrastructure_config_demos
       ansible-role: vms
       ansible-task: create_rhel_vm
   register: ip_addr_results
@@ -44,7 +44,7 @@
     public_ip_name: "{{ public_ip_name }}"
     security_group: "{{ network_sec_group_name }}"
     tags:
-      ansible-collection: azure.infrastructure_config_demos
+      ansible-collection: lab.azure.azure_infrastructure_config_demos
       ansible-role: vms
       ansible-task: create_rhel_vm
   register: vnic_results
@@ -71,7 +71,7 @@
     max_price: "{{ create_vm_max_price }}"
     priority: "{{ create_vm_priority }}"
     tags:
-      ansible-collection: azure.infrastructure_config_demos
+      ansible-collection: lab.azure.azure_infrastructure_config_demos
       ansible-role: vms
       ansible-task: create_vm
       blueprint: "{{ create_vm_blueprint | default(omit) }}"
