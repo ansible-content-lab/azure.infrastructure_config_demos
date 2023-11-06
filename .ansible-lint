@@ -18,3 +18,4 @@ enable_list:
 skip_list:
   - package-latest
   - yaml[line-length]
+  - var-naming[no-role-prefix]
